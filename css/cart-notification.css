@@ -1,0 +1,36 @@
+/* Notificação de Carrinho */
+.cart-notification {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  background: #1a1a1a;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transform: translateX(400px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.cart-notification.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .cart-notification {
+    right: 10px;
+    left: 10px;
+    transform: translateY(-100px);
+  }
+
+  .cart-notification.show {
+    transform: translateY(0);
+  }
+}
+
+

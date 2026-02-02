@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>S33D</title>
+
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="shortcut icon" href="assets/produtos/img/S33D-branco.png" type="image/x-icon">
+  <link rel="stylesheet" href="css/cart-notification.css">
+</head>
+<body>
+
+  <!-- BANNER TOPO -->
+
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-content">
+      <a href="index.html">
+        <img src="assets/produtos/img/S33D.png" alt="S33D" class="header-logo">
+      </a>
+      
+      <nav class="nav">
+        <a href="index.html#colecoes">Coleções</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="index.html#contato">Contato</a>
+        <a href="carrinho.html" class="cart">
+          <span class="cart-icon">🛒</span>
+          <span id="cart-count">0</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <img src="assets/produtos/img/S33D-branco.png" alt="S33D" class="hero-logo">
+      <p class="hero-tagline">levando o evangelho</p>
+      <a href="#shop" class="btn-hero">Ver Coleção</a>
+    </div>
+  </section>
+
+  <!-- CATEGORIAS -->
+  <section class="categories">
+    <div class="container">
+      <div class="category-tabs">
+        <button class="category-tab active" data-category="all">Todos</button>
+        <button class="category-tab" data-category="essential">Essential</button>
+        <button class="category-tab" data-category="oversized">Oversized</button>
+        <button class="category-tab" data-category="limited">Limitadas</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUTOS -->
+  <main class="container" id="shop">
+    <div class="section-title">
+      <h2>Nossa Coleção</h2>
+      <p>SEED</p>
+    </div>
+    <section id="product-grid" class="product-grid"></section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>INFORMAÇÕES</h3>
+          <ul>
+            <li><a href="#">Meus Pedidos</a></li>
+            <li><a href="#">Frete e Entrega</a></li>
+            <li><a href="#">Trocas e Devoluções</a></li>
+            <li><a href="#">Política de Privacidade</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>SEED CLUB</h3>
+          <p></p>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Seu email" required>
+            <button type="submit">ENVIAR</button>
+          </form>
+        </div>
+
+        <div class="footer-section">
+          <h3>ENTRE NO MODO SEED</h3>
+          <p>ABCDEFGHIJKLMOPQ.</p>
+          <div class="social-links">
+            <a href="#">instagram icon</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>SEED Club ® - Todos os Direitos Reservados</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

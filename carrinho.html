@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Carrinho - S33D</title>
+
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/carrinho.css">
+  <link rel="stylesheet" href="css/cart-notification.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-content">
+      <a href="index.html">
+        <img src="assets/produtos/img/S33D.png" alt="S33D" class="header-logo">
+      </a>
+      
+      <nav class="nav">
+        <a href="index.html#shop">Shop</a>
+        <a href="index.html#colecoes">Coleções</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="index.html#contato">Contato</a>
+        <a href="carrinho.html" class="cart">
+          <span class="cart-icon">🛒</span>
+          <span id="cart-count">0</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CARRINHO -->
+  <main class="container cart-page">
+    <h1 class="page-title">Carrinho de Compras</h1>
+    
+    <div class="cart-wrapper">
+      <div class="cart-items" id="cart-items">
+        <!-- Itens serão inseridos aqui via JavaScript -->
+      </div>
+      
+      <div class="cart-summary">
+        <h2>Resumo do Pedido</h2>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="subtotal">R$ 0,00</span>
+        </div>
+        <div class="summary-row">
+          <span>Frete</span>
+          <span id="frete">Calculado no checkout</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span id="total">R$ 0,00</span>
+        </div>
+        <button class="btn-checkout" onclick="checkout()">
+          Finalizar Compra
+        </button>
+        <a href="index.html" class="btn-continue">Continuar Comprando</a>
+      </div>
+    </div>
+
+    <div class="cart-empty" id="cart-empty" style="display: none;">
+      <h2>Seu carrinho está vazio</h2>
+      <p>Adicione produtos ao carrinho para continuar.</p>
+      <a href="index.html" class="btn-back-to-shop">Voltar para a Loja</a>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>INFORMAÇÕES</h3>
+          <ul>
+            <li><a href="#">Meus Pedidos</a></li>
+            <li><a href="#">Frete e Entrega</a></li>
+            <li><a href="#">Trocas e Devoluções</a></li>
+            <li><a href="#">Política de Privacidade</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>S33D CLUB</h3>
+          <p>Inscreva-se na nossa newsletter e receba novidades, promoções e lançamentos em primeira mão.</p>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Seu email" required>
+            <button type="submit">ENVIAR</button>
+          </form>
+        </div>
+
+        <div class="footer-section">
+          <h3>ENTRE NO MODO S33D</h3>
+          <p>A S33D chegou para revolucionar o mercado, oferecendo produtos de alta qualidade com preços acessíveis para todos.</p>
+          <div class="social-links">
+            <a href="#">📘</a>
+            <a href="#">📷</a>
+            <a href="#">🎵</a>
+            <a href="#">▶️</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>S33D Club ® - Todos os Direitos Reservados</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/carrinho.js"></script>
+</body>
+</html>
+
