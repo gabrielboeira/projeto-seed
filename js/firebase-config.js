@@ -1,25 +1,27 @@
 // Configuração do Firebase
-// TODO: Substituir pelos dados reais do Firebase quando disponível
+// ⚠️ SUBSTITUA pelas suas credenciais do Firebase Console
 
-// Estrutura de configuração do Firebase
 const firebaseConfig = {
-  // TODO: Adicionar configuração do Firebase
-  // apiKey: "your-api-key",
-  // authDomain: "your-auth-domain",
-  // projectId: "your-project-id",
-  // storageBucket: "your-storage-bucket",
-  // messagingSenderId: "your-messaging-sender-id",
-  // appId: "your-app-id"
+  // Cole suas credenciais aqui (obtenha em: Firebase Console > Configurações do Projeto > Seus apps)
+  apiKey: "SUA_API_KEY_AQUI",
+  authDomain: "seu-projeto.firebaseapp.com",
+  projectId: "seu-projeto-id",
+  storageBucket: "seu-projeto.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abc123"
 };
 
-// Inicialização do Firebase (comentado até ter as credenciais)
-// import { initializeApp } from 'firebase/app';
-// import { getFirestore, collection, getDocs } from 'firebase/firestore';
-// import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+// Inicialização do Firebase
+// Descomente quando tiver as credenciais configuradas
+/*
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getStorage, ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
-// const app = initializeApp(firebaseConfig);
-// const db = getFirestore(app);
-// const storage = getStorage(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+*/
 
 // Função para buscar produtos do Firebase
 async function fetchProdutosFromFirebase() {

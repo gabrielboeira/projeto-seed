@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Migrar Dados para Firebase</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .config-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 4px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 10px;
+      font-family: monospace;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background: #1a1a1a;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 5px;
+    }
+    button:hover {
+      background: #333;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .status {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    .product-list {
+      margin: 20px 0;
+    }
+    .product-item {
+      padding: 10px;
+      margin: 5px 0;
+      background: #fff;
+      border-left: 3px solid #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔥 Migração de Dados para Firebase</h1>
+    
+    <div class="config-section">
+      <h2>1. Configuração do Firebase</h2>
+      <p>Cole suas credenciais do Firebase aqui:</p>
+      <textarea id="firebaseConfig" placeholder='{
+  apiKey: "sua-api-key",
+  authDomain: "seu-projeto.firebaseapp.com",
+  projectId: "seu-projeto-id",
+  storageBucket: "seu-projeto.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abc123"
+}'></textarea>
+    </div>
+
+    <div class="config-section">
+      <h2>2. Dados dos Produtos</h2>
+      <p>Os dados serão carregados do arquivo data.js</p>
+      <div id="productsPreview" class="product-list"></div>
+    </div>
+
+    <div class="config-section">
+      <h2>3. Ações</h2>
+      <button onclick="loadProducts()">Carregar Produtos</button>
+      <button onclick="migrateToFirebase()" id="migrateBtn" disabled>Migrar para Firebase</button>
+      <button onclick="clearDatabase()" id="clearBtn" disabled style="background: #dc3545;">Limpar Banco (CUIDADO!)</button>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    let app = null;
+    let db = null;
+    let produtos = [];
+
+    // Dados dos produtos (copie do data.js)
+    const produtosData = [
+      {
+        nome: "SEED Essential Black",
+        preco: 89.90,
+        imagem: "produtos/camiseta-preta.jpg",
+        categoria: "essential",
+        tamanhos: ["P", "M", "G", "GG"],
+        estoque: {
+          "P": 5,
+          "M": 10,
+          "G": 8,
+          "GG": 3
+        }
+      },
+      {
+        nome: "SEED Essential White",
+        preco: 89.90,
+        imagem: "produtos/camiseta-branca.jpg",
+        categoria: "essential",
+        tamanhos: ["P", "M", "G", "GG"],
+        estoque: {
+          "P": 0,
+          "M": 10,
+          "G": 8,
+          "GG": 3
+        }
+      },
+      {
+        nome: "SEED Oversized - Limited",
+        preco: 99.90,
+        imagem: "produtos/camiseta-oversized.jpg",
+        categoria: "oversized",
+        tamanhos: ["P", "M", "G", "GG", "XG"],
+        estoque: {
+          "P": 2,
+          "M": 5,
+          "G": 4,
+          "GG": 1,
+          "XG": 0
+        }
+      },
+      {
+        nome: "SEED Essential Gray",
+        preco: 89.90,
+        imagem: "produtos/camiseta-cinza.jpg",
+        categoria: "essential",
+        tamanhos: ["P", "M", "G", "GG"],
+        estoque: {
+          "P": 7,
+          "M": 12,
+          "G": 9,
+          "GG": 4
+        }
+      },
+      {
+        nome: "SEED Oversized - Exclusive",
+        preco: 99.90,
+        imagem: "produtos/camiseta-exclusive.jpg",
+        categoria: "oversized",
+        tamanhos: ["P", "M", "G", "GG", "XG"],
+        estoque: {
+          "P": 3,
+          "M": 6,
+          "G": 5,
+          "GG": 2,
+          "XG": 1
+        }
+      },
+      {
+        nome: "SEED Limited Edition",
+        preco: 119.90,
+        imagem: "produtos/camiseta-limited.jpg",
+        categoria: "limited",
+        tamanhos: ["P", "M", "G", "GG"],
+        estoque: {
+          "P": 1,
+          "M": 3,
+          "G": 2,
+          "GG": 0
+        }
+      }
+    ];
+
+    window.loadProducts = function() {
+      produtos = produtosData;
+      const preview = document.getElementById('productsPreview');
+      preview.innerHTML = produtos.map((p, i) => 
+        `<div class="product-item">${i + 1}. ${p.nome} - R$ ${p.preco.toFixed(2)}</div>`
+      ).join('');
+      
+      document.getElementById('migrateBtn').disabled = false;
+      showStatus(`${produtos.length} produtos carregados!`, 'success');
+    };
+
+    window.migrateToFirebase = async function() {
+      const configText = document.getElementById('firebaseConfig').value.trim();
+      
+      if (!configText) {
+        showStatus('Por favor, cole as credenciais do Firebase!', 'error');
+        return;
+      }
+
+      try {
+        // Parse da configuração
+        const config = eval('(' + configText + ')');
+        
+        // Inicializar Firebase
+        app = initializeApp(config);
+        db = getFirestore(app);
+        
+        showStatus('Conectando ao Firebase...', 'info');
+        
+        // Adicionar produtos
+        let added = 0;
+        for (const produto of produtos) {
+          await addDoc(collection(db, 'produtos'), produto);
+          added++;
+          showStatus(`Adicionando produtos... ${added}/${produtos.length}`, 'info');
+        }
+        
+        showStatus(`✅ ${added} produtos migrados com sucesso!`, 'success');
+        document.getElementById('clearBtn').disabled = false;
+        
+      } catch (error) {
+        showStatus(`❌ Erro: ${error.message}`, 'error');
+        console.error(error);
+      }
+    };
+
+    window.clearDatabase = async function() {
+      if (!confirm('⚠️ ATENÇÃO: Isso vai deletar TODOS os produtos do banco! Tem certeza?')) {
+        return;
+      }
+
+      try {
+        if (!db) {
+          const configText = document.getElementById('firebaseConfig').value.trim();
+          const config = eval('(' + configText + ')');
+          app = initializeApp(config);
+          db = getFirestore(app);
+        }
+
+        const produtosSnapshot = await getDocs(collection(db, 'produtos'));
+        let deleted = 0;
+        
+        for (const docSnap of produtosSnapshot.docs) {
+          await deleteDoc(doc(db, 'produtos', docSnap.id));
+          deleted++;
+        }
+        
+        showStatus(`✅ ${deleted} produtos deletados!`, 'success');
+        
+      } catch (error) {
+        showStatus(`❌ Erro: ${error.message}`, 'error');
+        console.error(error);
+      }
+    };
+
+    function showStatus(message, type) {
+      const statusDiv = document.getElementById('status');
+      statusDiv.className = `status ${type}`;
+      statusDiv.textContent = message;
+    }
+
+    // Carregar produtos automaticamente
+    window.loadProducts();
+  </script>
+</body>
+</html>
+

@@ -19,29 +19,32 @@ function renderCart() {
     return;
   }
 
-  cartItems.innerHTML = cart.map(item => {
+  cartItems.innerHTML = cart.map((item, index) => {
     const product = produtos.find(p => p.id === item.id);
+    // Criar ID único para cada item (produto + tamanho + índice)
+    const itemUniqueId = `${item.id}_${item.tamanho || 'no-size'}_${index}`;
     return `
-      <div class="cart-item" data-id="${item.id}">
+      <div class="cart-item" data-id="${item.id}" data-index="${index}" data-tamanho="${item.tamanho || ''}">
         <a href="produto.html?id=${item.id}" class="cart-item-image">
           <img src="${item.imagem}" alt="${item.nome}">
         </a>
         <div class="cart-item-info">
           <h3><a href="produto.html?id=${item.id}">${item.nome}</a></h3>
+          ${item.tamanho ? `<p class="cart-item-size">Tamanho: ${item.tamanho}</p>` : ''}
           <div class="cart-item-price">
             <span class="price">${formatPrice(item.preco)}</span>
           </div>
         </div>
         <div class="cart-item-quantity">
-          <button class="qty-btn" onclick="updateItemQuantity(${item.id}, ${item.quantidade - 1})">-</button>
+          <button class="qty-btn" onclick="updateItemQuantity(${item.id}, ${item.quantidade - 1}, '${item.tamanho || ''}', ${index})">-</button>
           <input type="number" value="${item.quantidade}" min="1" 
-                 onchange="updateItemQuantity(${item.id}, parseInt(this.value))">
-          <button class="qty-btn" onclick="updateItemQuantity(${item.id}, ${item.quantidade + 1})">+</button>
+                 onchange="updateItemQuantity(${item.id}, parseInt(this.value), '${item.tamanho || ''}', ${index})">
+          <button class="qty-btn" onclick="updateItemQuantity(${item.id}, ${item.quantidade + 1}, '${item.tamanho || ''}', ${index})">+</button>
         </div>
         <div class="cart-item-total">
           <span>${formatPrice(item.preco * item.quantidade)}</span>
         </div>
-        <button class="cart-item-remove" onclick="removeItem(${item.id})" title="Remover">
+        <button class="cart-item-remove" onclick="removeItem(${item.id}, '${item.tamanho || ''}', ${index})" title="Remover">
           ×
         </button>
       </div>
@@ -53,14 +56,60 @@ function renderCart() {
   updateSummary();
 }
 
-function updateItemQuantity(productId, quantity) {
-  cartManager.updateQuantity(productId, quantity);
+function updateItemQuantity(productId, quantity, tamanho, index) {
+  // Encontrar item específico pelo índice
+  const item = cartManager.cart[index];
+  if (!item) return;
+  
+  const oldQuantity = item.quantidade;
+  const difference = quantity - oldQuantity;
+  
+  // Validar estoque antes de aumentar
+  if (difference > 0 && tamanho) {
+    const product = produtos.find(p => p.id === productId);
+    if (product && product.estoque && product.estoque[tamanho] !== undefined) {
+      if (product.estoque[tamanho] < difference) {
+        alert(`Apenas ${product.estoque[tamanho]} unidades disponíveis em estoque!`);
+        renderCart();
+        return;
+      }
+    }
+  }
+  
+  cartManager.updateQuantity(productId, quantity, tamanho, index);
+  
+  // Atualizar estoque quando mudar quantidade (quando integrar com Firebase, isso será feito no backend)
+  if (item && item.tamanho && difference !== 0) {
+    const product = produtos.find(p => p.id === productId);
+    if (product && product.estoque && product.estoque[item.tamanho] !== undefined) {
+      product.estoque[item.tamanho] -= difference;
+      
+      // Não permitir estoque negativo
+      if (product.estoque[item.tamanho] < 0) {
+        product.estoque[item.tamanho] = 0;
+      }
+    }
+  }
+  
   renderCart();
 }
 
-function removeItem(productId) {
+function removeItem(productId, tamanho, index) {
   if (confirm('Deseja remover este item do carrinho?')) {
-    cartManager.removeItem(productId);
+    // Encontrar o item antes de remover para restaurar estoque
+    const item = cartManager.cart[index];
+    
+    if (item) {
+      // Restaurar estoque quando remover do carrinho (quando integrar com Firebase, isso será feito no backend)
+      if (item.tamanho) {
+        const product = produtos.find(p => p.id === productId);
+        if (product && product.estoque && product.estoque[item.tamanho] !== undefined) {
+          product.estoque[item.tamanho] += item.quantidade;
+        }
+      }
+    }
+    
+    cartManager.removeItem(productId, tamanho);
     renderCart();
   }
 }
@@ -82,6 +131,20 @@ function checkout() {
   alert('Redirecionando para o checkout...\n\nEm desenvolvimento: Integração com gateway de pagamento');
   // window.location.href = 'checkout.html';
 }
+
+// Scroll suave para links âncora
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
 
 // Renderizar carrinho quando a página carregar
 if (document.readyState === 'loading') {

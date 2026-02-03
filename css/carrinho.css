@@ -59,6 +59,12 @@
   margin-bottom: 8px;
 }
 
+.cart-item-size {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
 .cart-item-info h3 a {
   color: var(--primary-color);
   transition: var(--transition);

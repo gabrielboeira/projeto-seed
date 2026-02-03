@@ -16,16 +16,21 @@ class CartManager {
   }
 
   addItem(product) {
-    const existingItem = this.cart.find(item => item.id === product.id);
+    // Verificar se já existe o mesmo produto com o mesmo tamanho
+    const existingItem = this.cart.find(item => 
+      item.id === product.id && 
+      item.tamanho === (product.tamanhoSelecionado || null)
+    );
     
     if (existingItem) {
-      existingItem.quantity += 1;
+      existingItem.quantidade += 1;
     } else {
       this.cart.push({
         id: product.id,
         nome: product.nome,
         preco: product.preco,
         imagem: product.imagem,
+        tamanho: product.tamanhoSelecionado || null,
         quantidade: 1
       });
     }
@@ -35,8 +40,19 @@ class CartManager {
     return this.cart;
   }
 
-  removeItem(productId) {
-    this.cart = this.cart.filter(item => item.id !== productId);
+  removeItem(productId, tamanho = null) {
+    if (tamanho) {
+      // Remover item específico com tamanho
+      this.cart = this.cart.filter(item => 
+        !(item.id === productId && item.tamanho === tamanho)
+      );
+    } else {
+      // Remover primeiro item encontrado (compatibilidade)
+      const index = this.cart.findIndex(item => item.id === productId);
+      if (index > -1) {
+        this.cart.splice(index, 1);
+      }
+    }
     this.saveCart();
     return this.cart;
   }

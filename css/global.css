@@ -126,7 +126,16 @@ a {
 }
 
 .cart-icon {
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
 }
 
 #cart-count {
