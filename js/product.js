@@ -77,9 +77,6 @@ function loadProductDetails() {
     </div>
     <div class="product-features">
       <div class="feature">
-        <span>✓</span> Troca e Devolução em 7 dias
-      </div>
-      <div class="feature">
         <span>✓</span> Pagamento Seguro
       </div>
     </div>

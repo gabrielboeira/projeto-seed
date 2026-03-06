@@ -3,10 +3,10 @@
 let produtos = [
     {
       id: 1,
-      nome: "SEED Essential Black",
-      preco: 89.90,
-      imagem: "assets/produtos/img/S33D.png",
-      categoria: "essential",
+      nome: "Seed Oversized",
+      preco: 99.90,
+      imagem: "assets/produtos/img/camiseta.png",
+      categoria: "oversized",
       tamanhos: ["P", "M", "G", "GG"],
       estoque: {
         "P": 5,
