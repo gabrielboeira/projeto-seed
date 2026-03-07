@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — S33D</title>
+  <link rel="shortcut icon" href="assets/produtos/img/S33D.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f5f2;
+      --white: #ffffff;
+      --ink: #1a1814;
+      --ink-soft: #6b6560;
+      --ink-faint: #c4bfb8;
+      --line: #e8e4df;
+      --accent: #1a1814;
+      --accent-hover: #3d3830;
+      --danger: #c0392b;
+      --success: #27ae60;
+      --shadow: 0 1px 3px rgba(26,24,20,0.06), 0 4px 16px rgba(26,24,20,0.04);
+      --shadow-hover: 0 2px 8px rgba(26,24,20,0.1), 0 8px 32px rgba(26,24,20,0.07);
+      --radius: 2px;
+      --font-body: 'Syne', sans-serif;
+      --font-serif: 'Cormorant Garamond', serif;
+    }
+
+    html { font-size: 15px; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    .admin-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left { display: flex; align-items: baseline; gap: 16px; }
+
+    .logo {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--ink);
+      font-style: italic;
+    }
+
+    .header-badge {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: var(--bg);
+      padding: 3px 10px;
+      border: 1px solid var(--line);
+    }
+
+    .back-link {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--ink); }
+    .back-link::before { content: '←'; font-size: 14px; }
+
+    /* ── LAYOUT ── */
+    .admin-body {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      min-height: calc(100vh - 64px);
+    }
+
+    /* ── FORM PANEL ── */
+    .form-panel {
+      padding: 48px;
+      border-right: 1px solid var(--line);
+    }
+
+    .panel-heading {
+      margin-bottom: 40px;
+    }
+    .panel-heading h2 {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .panel-heading p {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    /* ── FORM SECTIONS ── */
+    .form-section {
+      margin-bottom: 36px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .field-row.full { grid-template-columns: 1fr; }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="url"],
+    select {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 400;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+      appearance: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--ink);
+      box-shadow: 0 0 0 3px rgba(26,24,20,0.06);
+    }
+    input::placeholder { color: var(--ink-faint); }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6560' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+    select option { background: white; }
+
+    /* ── IMAGE URLS ── */
+    .url-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .url-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .url-row input { margin: 0; }
+
+    .btn-sq {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--ink-soft);
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-sq:hover { border-color: var(--ink); color: var(--ink); background: var(--bg); }
+    .btn-sq.remove:hover { border-color: var(--danger); color: var(--danger); }
+
+    .btn-add-url {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px;
+      background: none;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-add-url:hover { border-color: var(--ink-soft); color: var(--ink-soft); }
+
+    /* ── IMAGE PREVIEWS ── */
+    .previews-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .preview-item {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      animation: slideIn 0.2s ease;
+    }
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .preview-item .preview-num {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26,24,20,0.6);
+      color: white;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-align: center;
+      padding: 2px 0;
+    }
+
+    /* ── TAMANHOS ── */
+    .sizes-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+    .size-check { display: none; }
+    .size-label {
+      height: 40px;
+      min-width: 48px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-soft);
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .size-label:hover { border-color: var(--ink-soft); color: var(--ink); }
+    .size-check:checked + .size-label {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: white;
+    }
+
+    /* ── ESTOQUE ── */
+    .estoque-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 12px;
+    }
+    .estoque-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .estoque-field input { text-align: center; }
+
+    .estoque-empty {
+      font-size: 12px;
+      color: var(--ink-faint);
+      padding: 12px 0;
+      font-style: italic;
+      font-family: var(--font-serif);
+    }
+
+    /* ── STATUS ── */
+    .status-msg {
+      display: none;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+    }
+    .status-msg.success { background: #edf7ef; border: 1px solid #a3d9b0; color: var(--success); }
+    .status-msg.error   { background: #fdf1f0; border: 1px solid #f0b8b3; color: var(--danger); }
+
+    /* ── SUBMIT ── */
+    .btn-submit {
+      width: 100%;
+      padding: 15px;
+      background: var(--ink);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-submit:hover { background: var(--accent-hover); }
+    .btn-submit:active { transform: scale(0.99); }
+    .btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── LIST PANEL ── */
+    .list-panel {
+      background: var(--white);
+      padding: 48px 36px;
+      overflow-y: auto;
+      max-height: calc(100vh - 64px);
+      position: sticky;
+      top: 64px;
+    }
+
+    .list-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .list-heading h3 {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--ink);
+    }
+    .count-badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--white);
+      background: var(--ink);
+      padding: 2px 9px;
+      border-radius: 20px;
+    }
+
+    .produto-list { display: flex; flex-direction: column; gap: 2px; }
+
+    .produto-item {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 12px;
+      border-radius: var(--radius);
+      transition: background 0.15s;
+      cursor: default;
+    }
+    .produto-item:hover { background: var(--bg); }
+
+    .produto-item-img {
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      background: var(--bg);
+      border: 1px solid var(--line);
+    }
+
+    .produto-item-info { min-width: 0; }
+    .produto-item-info h4 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .produto-item-meta {
+      font-size: 11px;
+      color: var(--ink-soft);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .meta-dot { color: var(--ink-faint); }
+
+    .btn-del {
+      width: 30px;
+      height: 30px;
+      border: 1px solid transparent;
+      background: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-faint);
+      font-size: 16px;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-del:hover { border-color: var(--danger); color: var(--danger); background: #fdf1f0; }
+
+    .list-empty {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 16px;
+      color: var(--ink-faint);
+      text-align: center;
+      padding: 48px 0;
+    }
+
+    .list-loading-spinner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 48px 0;
+      color: var(--ink-faint);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--line);
+      border-top-color: var(--ink-soft);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── DIVIDER ── */
+    .list-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 20px 0;
+    }
+
+    @media (max-width: 960px) {
+      .admin-body { grid-template-columns: 1fr; }
+      .list-panel { position: static; max-height: none; border-top: 1px solid var(--line); }
+      .form-panel, .list-panel { padding: 32px 24px; }
+      .admin-header { padding: 0 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="admin-header">
+  <h1>S33D — Admin</h1>
+  <span id="admin-user-badge"></span>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <button onclick="fazerLogout()" class="back-link" style="background:none;cursor:pointer;">Sair</button>
+  </div>
+</header>
+
+<div class="admin-body">
+
+  <!-- FORMULÁRIO -->
+  <div class="form-panel">
+    <div class="panel-heading">
+      <h2>Novo Produto</h2>
+      <p>Preencha os dados abaixo para cadastrar</p>
+    </div>
+
+    <!-- Informações básicas -->
+    <div class="form-section">
+      <div class="section-label">Informações</div>
+      <div class="field-row" style="margin-bottom:16px;">
+        <div class="field">
+          <label>Nome do produto</label>
+          <input type="text" id="nome" placeholder="Ex: Seed Oversized Preta" />
+        </div>
+        <div class="field">
+          <label>Preço (R$)</label>
+          <input type="number" id="preco" placeholder="99.90" step="0.01" min="0" />
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field">
+          <label>Categoria</label>
+          <select id="categoria">
+            <option value="">Selecionar categoria...</option>
+            <option value="oversized">Oversized</option>
+            <option value="essential">Essential</option>
+            <option value="limited">Limited Edition</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Imagens -->
+    <div class="form-section">
+      <div class="section-label">Imagens</div>
+      <div class="field">
+        <label>URLs do Cloudinary</label>
+        <div class="url-list" id="url-list">
+          <div class="url-row">
+            <input type="url" class="url-input" placeholder="https://res.cloudinary.com/..." oninput="atualizarPreviews()" />
+            <button class="btn-sq" onclick="adicionarUrl()" title="Adicionar">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button class="btn-sq remove" onclick="removerUrl(this)" title="Remover">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+        <button class="btn-add-url" onclick="adicionarUrl()">+ Adicionar outra imagem</button>
+      </div>
+
+      <div id="previews-wrap" style="display:none;">
+        <div class="previews-strip" id="previews-strip"></div>
+      </div>
+    </div>
+
+    <!-- Tamanhos -->
+    <div class="form-section">
+      <div class="section-label">Tamanhos</div>
+      <div class="sizes-grid">
+        <input type="checkbox" class="size-check" id="sz-pp" value="PP"><label class="size-label" for="sz-pp">PP</label>
+        <input type="checkbox" class="size-check" id="sz-p"  value="P" ><label class="size-label" for="sz-p">P</label>
+        <input type="checkbox" class="size-check" id="sz-m"  value="M" ><label class="size-label" for="sz-m">M</label>
+        <input type="checkbox" class="size-check" id="sz-g"  value="G" ><label class="size-label" for="sz-g">G</label>
+        <input type="checkbox" class="size-check" id="sz-gg" value="GG"><label class="size-label" for="sz-gg">GG</label>
+        <input type="checkbox" class="size-check" id="sz-xg" value="XG"><label class="size-label" for="sz-xg">XG</label>
+      </div>
+    </div>
+
+    <!-- Estoque -->
+    <div class="form-section">
+      <div class="section-label">Estoque</div>
+      <div id="estoque-container">
+        <p class="estoque-empty">Selecione os tamanhos acima para definir o estoque.</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div id="status-msg" class="status-msg"></div>
+    <button class="btn-submit" id="btn-submit" onclick="salvarProduto()">Salvar produto</button>
+
+  </div>
+
+  <!-- LISTA -->
+  <div class="list-panel">
+    <div class="list-heading">
+      <h3>Produtos</h3>
+      <span class="count-badge" id="produto-count">0</span>
+    </div>
+    <div class="produto-list" id="produto-list">
+      <div class="list-loading-spinner">
+        <div class="spinner"></div>
+        <span>Carregando</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDA7rYcAyjiaC21ZjC5g7m9cegSkZyAQs0",
+    authDomain: "seed-b9834.firebaseapp.com",
+    projectId: "seed-b9834",
+    storageBucket: "seed-b9834.firebasestorage.app",
+    messagingSenderId: "623181920881",
+    appId: "1:623181920881:web:6cd7d2e38ed18c981ef9d0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ── URLs de imagem ─────────────────────────────────
+  const addIcon = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+  const removeIcon = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+
+  window.adicionarUrl = function() {
+    const list = document.getElementById('url-list');
+    const row = document.createElement('div');
+    row.className = 'url-row';
+    row.innerHTML = `
+      <input type="url" class="url-input" placeholder="https://res.cloudinary.com/..." oninput="atualizarPreviews()" />
+      <button class="btn-sq" onclick="adicionarUrl()" title="Adicionar">${addIcon}</button>
+      <button class="btn-sq remove" onclick="removerUrl(this)" title="Remover">${removeIcon}</button>
+    `;
+    list.appendChild(row);
+    row.querySelector('input').focus();
+  };
+
+  window.removerUrl = function(btn) {
+    const rows = document.querySelectorAll('#url-list .url-row');
+    if (rows.length <= 1) {
+      btn.closest('.url-row').querySelector('input').value = '';
+    } else {
+      btn.closest('.url-row').remove();
+    }
+    atualizarPreviews();
+  };
+
+  window.atualizarPreviews = function() {
+    const urls = getUrls().filter(u => u.startsWith('http'));
+    const wrap = document.getElementById('previews-wrap');
+    const strip = document.getElementById('previews-strip');
+    if (urls.length === 0) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    strip.innerHTML = urls.map((url, i) => `
+      <div class="preview-item">
+        <img src="${url}" onerror="this.style.opacity=0.2">
+        <span class="preview-num">${i + 1}</span>
+      </div>`).join('');
+  };
+
+  function getUrls() {
+    return [...document.querySelectorAll('.url-input')].map(i => i.value.trim()).filter(Boolean);
+  }
+
+  // ── Tamanhos → Estoque ─────────────────────────────
+  document.querySelectorAll('.size-check').forEach(cb => cb.addEventListener('change', atualizarEstoque));
+
+  function atualizarEstoque() {
+    const selecionados = [...document.querySelectorAll('.size-check:checked')].map(c => c.value);
+    const container = document.getElementById('estoque-container');
+    if (selecionados.length === 0) {
+      container.innerHTML = '<p class="estoque-empty">Selecione os tamanhos acima para definir o estoque.</p>';
+      return;
+    }
+    container.innerHTML = `<div class="estoque-grid">${
+      selecionados.map(t => `
+        <div class="estoque-field">
+          <label>${t}</label>
+          <input type="number" id="estoque-${t}" value="5" min="0" />
+        </div>`).join('')
+    }</div>`;
+  }
+
+  // ── Salvar ─────────────────────────────────────────
+  window.salvarProduto = async function() {
+    const nome      = document.getElementById('nome').value.trim();
+    const preco     = parseFloat(document.getElementById('preco').value);
+    const categoria = document.getElementById('categoria').value;
+    const imagens   = getUrls().filter(u => u.startsWith('http'));
+    const tamanhos  = [...document.querySelectorAll('.size-check:checked')].map(c => c.value);
+
+    if (!nome || isNaN(preco) || !categoria || imagens.length === 0 || tamanhos.length === 0) {
+      showStatus('Preencha todos os campos, adicione ao menos uma imagem e selecione ao menos um tamanho.', 'error');
+      return;
+    }
+
+    const estoque = {};
+    tamanhos.forEach(t => { estoque[t] = parseInt(document.getElementById(`estoque-${t}`)?.value || '0'); });
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+
+    try {
+      await addDoc(collection(db, 'produtos'), { nome, preco, categoria, imagem: imagens[0], imagens, tamanhos, estoque });
+      showStatus(`"${nome}" adicionado com sucesso.`, 'success');
+      limpar();
+      carregarProdutos();
+    } catch (err) {
+      showStatus('Erro: ' + err.message, 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Salvar produto';
+    }
+  };
+
+  function showStatus(msg, tipo) {
+    const el = document.getElementById('status-msg');
+    el.textContent = msg; el.className = `status-msg ${tipo}`; el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+  }
+
+  function limpar() {
+    ['nome','preco'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('categoria').value = '';
+    document.getElementById('url-list').innerHTML = `
+      <div class="url-row">
+        <input type="url" class="url-input" placeholder="https://res.cloudinary.com/..." oninput="atualizarPreviews()" />
+        <button class="btn-sq" onclick="adicionarUrl()" title="Adicionar">${addIcon}</button>
+        <button class="btn-sq remove" onclick="removerUrl(this)" title="Remover">${removeIcon}</button>
+      </div>`;
+    document.getElementById('previews-wrap').style.display = 'none';
+    document.querySelectorAll('.size-check').forEach(c => c.checked = false);
+    document.getElementById('estoque-container').innerHTML =
+      '<p class="estoque-empty">Selecione os tamanhos acima para definir o estoque.</p>';
+  }
+
+  // ── Listar ─────────────────────────────────────────
+  async function carregarProdutos() {
+    const list = document.getElementById('produto-list');
+    list.innerHTML = `<div class="list-loading-spinner"><div class="spinner"></div><span>Carregando</span></div>`;
+
+    try {
+      const snap = await getDocs(collection(db, 'produtos'));
+      document.getElementById('produto-count').textContent = snap.size;
+
+      if (snap.empty) {
+        list.innerHTML = '<p class="list-empty">Nenhum produto ainda.</p>';
+        return;
+      }
+
+      list.innerHTML = '';
+      snap.forEach((d, i) => {
+        const p = d.data();
+        const img = (p.imagens && p.imagens[0]) || p.imagem || '';
+        const qtdFotos = (p.imagens || [p.imagem]).filter(Boolean).length;
+        const item = document.createElement('div');
+        item.className = 'produto-item';
+        item.innerHTML = `
+          <img class="produto-item-img" src="${img}" alt="${p.nome}" onerror="this.style.opacity=0.15">
+          <div class="produto-item-info">
+            <h4>${p.nome}</h4>
+            <div class="produto-item-meta">
+              <span>R$ ${Number(p.preco).toFixed(2)}</span>
+              <span class="meta-dot">·</span>
+              <span>${p.categoria || '—'}</span>
+              <span class="meta-dot">·</span>
+              <span>${qtdFotos} foto${qtdFotos !== 1 ? 's' : ''}</span>
+            </div>
+          </div>
+          <button class="btn-del" onclick="deletar('${d.id}', this)" title="Excluir">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        `;
+        list.appendChild(item);
+      });
+    } catch (err) {
+      list.innerHTML = `<p class="list-empty" style="color:var(--danger);">Erro: ${err.message}</p>`;
+    }
+  }
+
+  window.deletar = async function(id, btn) {
+    if (!confirm('Excluir este produto?')) return;
+    try {
+      await deleteDoc(doc(db, 'produtos', id));
+      btn.closest('.produto-item').remove();
+      const c = document.getElementById('produto-count');
+      c.textContent = Math.max(0, parseInt(c.textContent) - 1);
+    } catch (err) { alert('Erro: ' + err.message); }
+  };
+
+  carregarProdutos();
+</script>
+<script type="module" src="js/admin-auth.js"></script>
+</body>
+</html>

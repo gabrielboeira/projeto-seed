@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout — S33D</title>
+  <link rel="shortcut icon" href="assets/produtos/img/S33D-branco.png" type="image/x-icon">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="checkout-header">
+    <a href="index.html">
+      <img src="assets/produtos/img/S33D.png" alt="S33D">
+    </a>
+    <div class="secure-badge">
+      🔒 Compra 100% segura
+    </div>
+  </header>
+
+  <!-- STEPS BAR -->
+  <div class="steps-bar">
+    <div class="step-item active" data-step="1">
+      <div class="step-num">1</div>
+      <span class="step-label">Dados</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="2">
+      <div class="step-num">2</div>
+      <span class="step-label">Entrega</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="3">
+      <div class="step-num">3</div>
+      <span class="step-label">Pagamento</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="4">
+      <div class="step-num">4</div>
+      <span class="step-label">Confirmação</span>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="checkout-body">
+
+    <!-- MAIN -->
+    <div>
+
+      <!-- STEP 1: DADOS -->
+      <div class="step-panel active" id="step-1">
+        <div class="card-box">
+          <h2 class="card-box-title">Seus dados</h2>
+          <p class="card-box-subtitle">Informações de contato</p>
+          <div id="status-1" class="status-banner"></div>
+          <div class="fields-grid">
+            <div class="field field-full">
+              <label>Nome completo</label>
+              <input type="text" id="nome" placeholder="João da Silva" />
+              <span class="field-error" id="err-nome">Campo obrigatório</span>
+            </div>
+            <div class="field">
+              <label>E-mail</label>
+              <input type="email" id="email" placeholder="joao@email.com" />
+              <span class="field-error" id="err-email">E-mail inválido</span>
+            </div>
+            <div class="field">
+              <label>Telefone / WhatsApp</label>
+              <input type="tel" id="telefone" placeholder="(51) 99999-9999" oninput="mascaraTelefone(this)" />
+            </div>
+            <div class="field field-full">
+              <label>CPF</label>
+              <input type="text" id="cpf" placeholder="000.000.000-00" oninput="mascaraCPF(this)" maxlength="14" />
+              <span class="field-error" id="err-cpf">CPF inválido</span>
+            </div>
+          </div>
+        </div>
+        <div class="step-nav">
+          <span></span>
+          <button class="btn-next" onclick="irParaStep(2)">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: ENTREGA -->
+      <div class="step-panel" id="step-2">
+        <div class="card-box">
+          <h2 class="card-box-title">Entrega</h2>
+          <p class="card-box-subtitle">Endereço e frete</p>
+          <div id="status-2" class="status-banner"></div>
+          <div class="fields-grid">
+            <div class="field field-full">
+              <label>CEP</label>
+              <div class="cep-row">
+                <input type="text" id="cep" placeholder="00000-000" oninput="mascaraCEP(this)" maxlength="9" />
+                <button class="btn-cep" onclick="buscarCEP()">Buscar</button>
+              </div>
+              <span class="field-hint">Digite o CEP para calcular o frete e preencher o endereço</span>
+            </div>
+            <div class="field field-full">
+              <label>Endereço</label>
+              <input type="text" id="endereco" placeholder="Rua Exemplo" />
+            </div>
+            <div class="field">
+              <label>Número</label>
+              <input type="text" id="numero" placeholder="123" />
+            </div>
+            <div class="field">
+              <label>Complemento</label>
+              <input type="text" id="complemento" placeholder="Apto 4 (opcional)" />
+            </div>
+            <div class="field">
+              <label>Bairro</label>
+              <input type="text" id="bairro" placeholder="Centro" />
+            </div>
+            <div class="field">
+              <label>Cidade</label>
+              <input type="text" id="cidade" placeholder="Porto Alegre" />
+            </div>
+            <div class="field">
+              <label>Estado</label>
+              <input type="text" id="uf" placeholder="RS" maxlength="2" />
+            </div>
+          </div>
+
+          <div id="frete-wrap" style="display:none;">
+            <p class="frete-section-title">Opções de frete</p>
+            <div class="frete-options" id="frete-options"></div>
+          </div>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back-step" onclick="irParaStep(1)">← Voltar</button>
+          <button class="btn-next" onclick="irParaStep(3)">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: PAGAMENTO -->
+      <div class="step-panel" id="step-3">
+        <div class="card-box">
+          <h2 class="card-box-title">Pagamento</h2>
+          <p class="card-box-subtitle">Escolha a forma de pagamento</p>
+          <div id="status-3" class="status-banner"></div>
+
+          <div class="payment-tabs">
+            <button class="pay-tab active" onclick="trocarPagamento('cartao', this)">
+              <span class="pay-tab-icon">💳</span>
+              Cartão
+            </button>
+            <button class="pay-tab" onclick="trocarPagamento('pix', this)">
+              <span class="pay-tab-icon">⚡</span>
+              PIX
+            </button>
+          </div>
+
+          <!-- CARTÃO -->
+          <div class="pay-form active" id="form-cartao">
+            <div class="card-visual">
+              <div class="card-chip">▪</div>
+              <div class="card-number-display" id="card-number-display">•••• •••• •••• ••••</div>
+              <div class="card-bottom">
+                <div>
+                  <div class="card-lbl">Titular</div>
+                  <div class="card-val" id="card-name-display">NOME NO CARTÃO</div>
+                </div>
+                <div>
+                  <div class="card-lbl">Validade</div>
+                  <div class="card-val" id="card-exp-display">MM/AA</div>
+                </div>
+              </div>
+            </div>
+            <div class="fields-grid">
+              <div class="field field-full">
+                <label>Número do cartão</label>
+                <input type="text" id="card-numero" placeholder="0000 0000 0000 0000"
+                  oninput="mascaraCartao(this); atualizarCardDisplay()" maxlength="19" />
+              </div>
+              <div class="field field-full">
+                <label>Nome no cartão</label>
+                <input type="text" id="card-nome" placeholder="JOÃO DA SILVA"
+                  style="text-transform:uppercase;"
+                  oninput="atualizarNomeCard()" />
+              </div>
+              <div class="field">
+                <label>Validade</label>
+                <input type="text" id="card-validade" placeholder="MM/AA"
+                  oninput="mascaraValidade(this); atualizarValidadeCard()" maxlength="5" />
+              </div>
+              <div class="field">
+                <label>CVV</label>
+                <input type="text" id="card-cvv" placeholder="•••" maxlength="4" />
+              </div>
+              <div class="field field-full">
+                <label>Parcelas</label>
+                <select id="parcelas">
+                  <option value="1">1x sem juros</option>
+                  <option value="2">2x sem juros</option>
+                  <option value="3">3x sem juros</option>
+                  <option value="6">6x sem juros</option>
+                  <option value="12">12x sem juros</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- PIX -->
+          <div class="pay-form" id="form-pix">
+            <div class="pix-box">
+              <div class="pix-box-icon">⚡</div>
+              <h4>Pague com PIX</h4>
+              <p>Após confirmar, você receberá o QR Code para pagamento.<br>Aprovação em segundos, sem taxas extras.</p>
+              <div class="pix-qr-wrap" id="pix-qr-wrap">
+                <img id="pix-qr-img" src="" alt="QR Code PIX" />
+                <input type="text" id="pix-codigo" class="pix-codigo-input"
+                  readonly onclick="copiarPIX()" placeholder="Código PIX aparecerá aqui" />
+                <button class="pix-copy-btn" onclick="copiarPIX()">📋 Copiar código PIX</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="step-nav">
+          <button class="btn-back-step" onclick="irParaStep(2)">← Voltar</button>
+          <button class="btn-next" id="btn-pagar" onclick="processarPagamento()">Finalizar pedido →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: CONFIRMAÇÃO -->
+      <div class="step-panel" id="step-4">
+        <div class="card-box">
+          <div class="confirmacao-wrap">
+            <div class="confirmacao-icon">✓</div>
+            <h2>Pedido confirmado!</h2>
+            <p>Obrigado pela sua compra na S33D. Você receberá um e-mail com os detalhes e informações de rastreamento em breve.</p>
+            <div class="pedido-id-box">Pedido <strong id="pedido-id">—</strong></div><br><br>
+            <a href="index.html" class="btn-voltar-loja">Continuar comprando</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SUMMARY SIDEBAR -->
+    <div class="summary-box">
+      <p class="summary-box-title">Resumo do pedido</p>
+      <div class="summary-items" id="summary-items"></div>
+      <div class="summary-divider"></div>
+      <div class="summary-row"><span>Subtotal</span><span id="summary-subtotal">R$ 0,00</span></div>
+      <div class="summary-row" id="summary-frete-row" style="display:none;">
+        <span>Frete</span><span id="summary-frete">—</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-row total"><span>Total</span><span id="summary-total">R$ 0,00</span></div>
+    </div>
+
+  </div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/checkout.js"></script>
+
+</body>
+</html>

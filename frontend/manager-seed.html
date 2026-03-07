@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login — S33D</title>
+  <link rel="shortcut icon" href="assets/produtos/img/S33D.png" type="image/x-icon">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/admin-login.css">
+</head>
+<body>
+
+  <div class="login-wrapper">
+    <div class="login-box">
+
+      <a href="index.html">
+        <img src="assets/produtos/img/S33D.png" alt="S33D" class="login-logo">
+      </a>
+
+      <h2 class="login-title">Área Administrativa</h2>
+      <p class="login-subtitle">Acesso restrito</p>
+
+      <div id="login-error" class="login-error" style="display:none;"></div>
+
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="login-email" placeholder="admin@seed.com" />
+      </div>
+
+      <div class="field" style="margin-top: 16px;">
+        <label>Senha</label>
+        <div class="password-row">
+          <input type="password" id="login-senha" placeholder="••••••••" />
+          <button class="btn-toggle-pass" onclick="toggleSenha()" type="button">👁</button>
+        </div>
+      </div>
+
+      <button class="btn-login" id="btn-login" onclick="fazerLogin()">
+        Entrar
+      </button>
+
+    </div>
+  </div>
+
+  <script type="module" src="js/admin-auth.js"></script>
+
+</body>
+</html>
