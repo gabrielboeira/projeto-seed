@@ -4,13 +4,14 @@ const router  = express.Router();
 
 const ASAAS_URL = process.env.ASAAS_SANDBOX === 'true'
   ? 'https://sandbox.asaas.com/api/v3'
-  : 'https://api.asaas.com/api/v3';
+  : 'https://www.asaas.com/api/v3';   
 
 const asaas = axios.create({
   baseURL: ASAAS_URL,
   headers: {
     'access_token': process.env.ASAAS_API_KEY,
     'Content-Type': 'application/json',
+    'User-Agent': 'S33D/1.0',
   },
 });
 
@@ -34,6 +35,8 @@ async function buscarOuCriarCliente({ nome, email, cpfCnpj, telefone }) {
 // Body: { nome, email, cpfCnpj, telefone, valor }
 // ────────────────────────────────────────────────────
 router.post('/pix', async (req, res) => {
+  console.log('URL Asaas:', ASAAS_URL); // adicione essa linha
+  console.log('KEY:', process.env.ASAAS_API_KEY?.slice(0, 25));
   try {
     const { nome, email, cpfCnpj, telefone, valor } = req.body;
 
