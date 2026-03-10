@@ -4,16 +4,17 @@
     "description": "Backend da loja S33D — Asaas + Melhor Envio",
     "main": "server.js",
     "scripts": {
-      "start": "node server.js",
-      "dev": "nodemon server.js"
+        "start": "node server.js",
+        "dev": "nodemon server.js"
     },
     "dependencies": {
-      "axios": "^1.7.2",
-      "cors": "^2.8.5",
-      "dotenv": "^16.4.5",
-      "express": "^4.19.2"
+        "axios": "^1.7.2",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "firebase-admin": "^13.7.0"
     },
     "devDependencies": {
-      "nodemon": "^3.1.4"
+        "nodemon": "^3.1.4"
     }
-  }
+}
