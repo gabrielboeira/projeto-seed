@@ -63,7 +63,8 @@ function templateBase(conteudo) {
 
 // ── E-mail 1: Confirmação de pedido ───────────────────
 async function enviarConfirmacaoPedido(pedido) {
-  const { cliente, itens = [], frete, pagamento, total, id } = pedido;
+    const { cliente, itens = [], frete, pagamento, id } = pedido;
+    const total = (itens.reduce((s, i) => s + (i.preco * i.quantidade), 0)) + (frete?.preco || 0);
 
   const itensHtml = itens.map(item => `
     <div class="item-row">
