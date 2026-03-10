@@ -264,14 +264,30 @@ async function processarPagamento() {
 
   const total = +(cartManager.getTotal() + (checkoutState.freteSelecionado?.preco || 0)).toFixed(2);
 
+  // Monta itens do carrinho para salvar no Firestore
+  const itens = cartManager.cart.map(item => ({
+    produtoId:  String(item.id),
+    nome:       item.nome,
+    tamanho:    item.tamanho || null,
+    quantidade: item.quantidade,
+    preco:      item.preco,
+  }));
+
   const payload = {
-    nome:     document.getElementById('nome').value.trim(),
-    email:    document.getElementById('email').value.trim(),
-    cpfCnpj:  document.getElementById('cpf').value.replace(/\D/g, ''),
-    telefone: document.getElementById('telefone').value.replace(/\D/g, ''),
-    cep:      document.getElementById('cep').value.replace(/\D/g, ''),
-    numero:   document.getElementById('numero').value,
-    valor:    total,
+    nome:        document.getElementById('nome').value.trim(),
+    email:       document.getElementById('email').value.trim(),
+    cpfCnpj:     document.getElementById('cpf').value.replace(/\D/g, ''),
+    telefone:    document.getElementById('telefone').value.replace(/\D/g, ''),
+    cep:         document.getElementById('cep').value.replace(/\D/g, ''),
+    numero:      document.getElementById('numero').value,
+    complemento: document.getElementById('complemento').value,
+    endereco:    document.getElementById('endereco').value,
+    bairro:      document.getElementById('bairro').value,
+    cidade:      document.getElementById('cidade').value,
+    uf:          document.getElementById('uf').value,
+    valor:       total,
+    itens,
+    frete:       checkoutState.freteSelecionado,
   };
 
   try {
