@@ -2,3 +2,5 @@ node_modules/
 .env
 dist/
 build/
+seed-b9834-firebase-adminsdk-fbsvc-5cddf7a74a.json
+*firebase-adminsdk*.json
