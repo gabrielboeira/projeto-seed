@@ -1,7 +1,7 @@
 const { Resend } = require('resend');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM   = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+const FROM   = process.env.EMAIL_FROM || 'collection@s33d.com.br';
 
 const fmt = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
