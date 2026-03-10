@@ -128,8 +128,7 @@ function checkout() {
   }
   
   // Aqui você pode redirecionar para uma página de checkout
-  alert('Redirecionando para o checkout...\n\nEm desenvolvimento: Integração com gateway de pagamento');
-  // window.location.href = 'checkout.html';
+  window.location.href = 'checkout.html';
 }
 
 // Scroll suave para links âncora
