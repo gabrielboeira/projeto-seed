@@ -934,7 +934,7 @@
     const list = document.getElementById('pedidos-list');
     list.innerHTML = `<div class="list-loading-spinner"><div class="spinner"></div><span>Carregando</span></div>`;
     try {
-      const snap = await getDocs(query(collection(db, 'pedidos'), orderBy('criadoEm', 'desc')));
+      const snap = await getDocs(collection(db, 'pedidos'));
       todosPedidos = [];
       snap.forEach(d => todosPedidos.push({ id: d.id, ...d.data() }));
       atualizarStats();
