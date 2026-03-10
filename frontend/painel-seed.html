@@ -21,6 +21,7 @@
       --accent-hover: #3d3830;
       --danger: #c0392b;
       --success: #27ae60;
+      --warning: #e67e22;
       --shadow: 0 1px 3px rgba(26,24,20,0.06), 0 4px 16px rgba(26,24,20,0.04);
       --shadow-hover: 0 2px 8px rgba(26,24,20,0.1), 0 8px 32px rgba(26,24,20,0.07);
       --radius: 2px;
@@ -50,9 +51,7 @@
       top: 0;
       z-index: 100;
     }
-
-    .header-left { display: flex; align-items: baseline; gap: 16px; }
-
+    .header-left { display: flex; align-items: center; gap: 16px; }
     .logo {
       font-family: var(--font-serif);
       font-size: 22px;
@@ -61,7 +60,6 @@
       color: var(--ink);
       font-style: italic;
     }
-
     .header-badge {
       font-size: 10px;
       font-weight: 600;
@@ -72,7 +70,6 @@
       padding: 3px 10px;
       border: 1px solid var(--line);
     }
-
     .back-link {
       font-size: 11px;
       font-weight: 500;
@@ -84,26 +81,54 @@
       align-items: center;
       gap: 6px;
       transition: color 0.2s;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
     }
     .back-link:hover { color: var(--ink); }
-    .back-link::before { content: '←'; font-size: 14px; }
 
-    /* ── LAYOUT ── */
+    /* ── TABS ── */
+    .admin-tabs {
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+      padding: 0 48px;
+      display: flex;
+      gap: 0;
+    }
+    .tab-btn {
+      padding: 16px 24px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--ink); }
+    .tab-btn.active { color: var(--ink); border-bottom-color: var(--ink); }
+
+    /* ── TAB CONTENT ── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── PRODUTOS LAYOUT ── */
     .admin-body {
       display: grid;
       grid-template-columns: 1fr 400px;
-      min-height: calc(100vh - 64px);
+      min-height: calc(100vh - 112px);
     }
-
-    /* ── FORM PANEL ── */
     .form-panel {
       padding: 48px;
       border-right: 1px solid var(--line);
     }
-
-    .panel-heading {
-      margin-bottom: 40px;
-    }
+    .panel-heading { margin-bottom: 40px; }
     .panel-heading h2 {
       font-family: var(--font-serif);
       font-size: 32px;
@@ -119,12 +144,7 @@
       text-transform: uppercase;
       color: var(--ink-soft);
     }
-
-    /* ── FORM SECTIONS ── */
-    .form-section {
-      margin-bottom: 36px;
-    }
-
+    .form-section { margin-bottom: 36px; }
     .section-label {
       font-size: 10px;
       font-weight: 600;
@@ -136,22 +156,10 @@
       align-items: center;
       gap: 12px;
     }
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--line);
-    }
-
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .field-row.full { grid-template-columns: 1fr; }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
+    .field { display: flex; flex-direction: column; gap: 6px; }
     .field label {
       font-size: 10px;
       font-weight: 600;
@@ -159,35 +167,28 @@
       text-transform: uppercase;
       color: var(--ink-soft);
     }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="url"],
-    select {
+    input[type="text"], input[type="number"], input[type="url"], select {
       background: var(--white);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       color: var(--ink);
       font-family: var(--font-body);
       font-size: 14px;
-      font-weight: 400;
       padding: 11px 14px;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
       width: 100%;
       appearance: none;
     }
-    input:focus, select:focus {
-      border-color: var(--ink);
-      box-shadow: 0 0 0 3px rgba(26,24,20,0.06);
-    }
+    input:focus, select:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(26,24,20,0.06); }
     input::placeholder { color: var(--ink-faint); }
-    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6560' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-    select option { background: white; }
-
-    /* ── IMAGE URLS ── */
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6560' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
     .url-list { display: flex; flex-direction: column; gap: 8px; }
-
     .url-row {
       display: grid;
       grid-template-columns: 1fr auto auto;
@@ -195,307 +196,365 @@
       align-items: center;
       animation: slideIn 0.2s ease;
     }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .url-row input { margin: 0; }
-
+    @keyframes slideIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
     .btn-sq {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       border: 1px solid var(--line);
       background: var(--white);
       border-radius: var(--radius);
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      color: var(--ink-soft);
-      transition: all 0.15s;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: var(--ink-soft);
+      transition: all 0.15s; flex-shrink: 0;
     }
     .btn-sq:hover { border-color: var(--ink); color: var(--ink); background: var(--bg); }
     .btn-sq.remove:hover { border-color: var(--danger); color: var(--danger); }
-
     .btn-add-url {
-      width: 100%;
-      margin-top: 6px;
-      padding: 10px;
-      background: none;
-      border: 1px dashed var(--line);
-      border-radius: var(--radius);
-      font-family: var(--font-body);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--ink-faint);
-      cursor: pointer;
+      width: 100%; margin-top: 6px; padding: 10px;
+      background: none; border: 1px dashed var(--line);
+      border-radius: var(--radius); font-family: var(--font-body);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--ink-faint); cursor: pointer;
       transition: all 0.2s;
     }
     .btn-add-url:hover { border-color: var(--ink-soft); color: var(--ink-soft); }
-
-    /* ── IMAGE PREVIEWS ── */
-    .previews-strip {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
+    .previews-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
     .preview-item {
-      position: relative;
-      width: 72px;
-      height: 72px;
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background: var(--bg);
-      animation: slideIn 0.2s ease;
+      position: relative; width: 72px; height: 72px;
+      border-radius: var(--radius); overflow: hidden;
+      border: 1px solid var(--line); background: var(--bg);
     }
-    .preview-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .preview-item img { width: 100%; height: 100%; object-fit: cover; }
     .preview-item .preview-num {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(26,24,20,0.6);
-      color: white;
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-align: center;
-      padding: 2px 0;
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(26,24,20,0.6); color: white;
+      font-size: 9px; font-weight: 600; text-align: center; padding: 2px 0;
     }
-
-    /* ── TAMANHOS ── */
     .sizes-grid { display: flex; gap: 8px; flex-wrap: wrap; }
     .size-check { display: none; }
     .size-label {
-      height: 40px;
-      min-width: 48px;
-      padding: 0 14px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--white);
-      font-family: var(--font-body);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--ink-soft);
-      transition: all 0.15s;
-      user-select: none;
+      height: 40px; min-width: 48px; padding: 0 14px;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: var(--white); font-family: var(--font-body);
+      font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--ink-soft); transition: all 0.15s; user-select: none;
     }
     .size-label:hover { border-color: var(--ink-soft); color: var(--ink); }
-    .size-check:checked + .size-label {
-      background: var(--ink);
-      border-color: var(--ink);
-      color: white;
-    }
-
-    /* ── ESTOQUE ── */
-    .estoque-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-      gap: 12px;
-    }
-    .estoque-field label {
-      display: block;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--ink-soft);
-      margin-bottom: 6px;
-      text-align: center;
-    }
+    .size-check:checked + .size-label { background: var(--ink); border-color: var(--ink); color: white; }
+    .estoque-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; }
+    .estoque-field label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px; text-align: center; }
     .estoque-field input { text-align: center; }
-
-    .estoque-empty {
-      font-size: 12px;
-      color: var(--ink-faint);
-      padding: 12px 0;
-      font-style: italic;
-      font-family: var(--font-serif);
-    }
-
-    /* ── STATUS ── */
-    .status-msg {
-      display: none;
-      padding: 12px 16px;
-      border-radius: var(--radius);
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      margin-bottom: 4px;
-    }
+    .estoque-empty { font-size: 12px; color: var(--ink-faint); padding: 12px 0; font-style: italic; font-family: var(--font-serif); }
+    .status-msg { display: none; padding: 12px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; margin-bottom: 4px; }
     .status-msg.success { background: #edf7ef; border: 1px solid #a3d9b0; color: var(--success); }
     .status-msg.error   { background: #fdf1f0; border: 1px solid #f0b8b3; color: var(--danger); }
-
-    /* ── SUBMIT ── */
     .btn-submit {
-      width: 100%;
-      padding: 15px;
-      background: var(--ink);
-      color: var(--white);
-      border: none;
-      border-radius: var(--radius);
-      font-family: var(--font-body);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
+      width: 100%; padding: 15px; background: var(--ink); color: var(--white);
+      border: none; border-radius: var(--radius); font-family: var(--font-body);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s, transform 0.1s;
     }
     .btn-submit:hover { background: var(--accent-hover); }
-    .btn-submit:active { transform: scale(0.99); }
     .btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    /* ── LIST PANEL ── */
     .list-panel {
-      background: var(--white);
-      padding: 48px 36px;
-      overflow-y: auto;
-      max-height: calc(100vh - 64px);
-      position: sticky;
-      top: 64px;
+      background: var(--white); padding: 48px 36px;
+      overflow-y: auto; max-height: calc(100vh - 112px);
+      position: sticky; top: 112px;
+    }
+    .list-heading { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px; }
+    .list-heading h3 { font-family: var(--font-serif); font-size: 24px; font-weight: 300; font-style: italic; }
+    .count-badge { font-size: 11px; font-weight: 700; color: var(--white); background: var(--ink); padding: 2px 9px; border-radius: 20px; }
+    .produto-list { display: flex; flex-direction: column; gap: 2px; }
+    .produto-item { display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; align-items: center; padding: 12px; border-radius: var(--radius); transition: background 0.15s; }
+    .produto-item:hover { background: var(--bg); }
+    .produto-item-img { width: 56px; height: 56px; object-fit: cover; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--line); }
+    .produto-item-info h4 { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+    .produto-item-meta { font-size: 11px; color: var(--ink-soft); display: flex; gap: 8px; align-items: center; }
+    .meta-dot { color: var(--ink-faint); }
+    .btn-del {
+      width: 30px; height: 30px; border: 1px solid transparent;
+      background: none; border-radius: var(--radius); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink-faint); font-size: 16px; transition: all 0.15s; flex-shrink: 0;
+    }
+    .btn-del:hover { border-color: var(--danger); color: var(--danger); background: #fdf1f0; }
+    .list-empty { font-family: var(--font-serif); font-style: italic; font-size: 16px; color: var(--ink-faint); text-align: center; padding: 48px 0; }
+    .list-loading-spinner { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 48px 0; color: var(--ink-faint); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
+    .spinner { width: 20px; height: 20px; border: 2px solid var(--line); border-top-color: var(--ink-soft); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── PEDIDOS ── */
+    .pedidos-panel { padding: 48px; }
+
+    .pedidos-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .pedidos-header h2 {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
     }
 
-    .list-heading {
+    .pedidos-filtros {
       display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: 28px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    .list-heading h3 {
+    .filtro-btn {
+      padding: 8px 16px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filtro-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .filtro-btn.active { background: var(--ink); border-color: var(--ink); color: white; }
+
+    .pedidos-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+    }
+    .stat-card-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+    }
+    .stat-card-value {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--ink);
+    }
+
+    .pedidos-table {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .pedidos-table-header {
+      display: grid;
+      grid-template-columns: 1fr 160px 120px 120px 100px 48px;
+      gap: 16px;
+      padding: 12px 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .pedido-row {
+      display: grid;
+      grid-template-columns: 1fr 160px 120px 120px 100px 48px;
+      gap: 16px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+    .pedido-row:last-child { border-bottom: none; }
+    .pedido-row:hover { background: var(--bg); }
+
+    .pedido-cliente h4 { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+    .pedido-cliente span { font-size: 11px; color: var(--ink-soft); }
+
+    .pedido-valor { font-size: 14px; font-weight: 700; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.7; flex-shrink: 0; }
+    .status-PENDING   { background: #fef9ec; color: #b7791f; }
+    .status-CONFIRMED { background: #edf7ef; color: var(--success); }
+    .status-RECEIVED  { background: #edf7ef; color: var(--success); }
+    .status-OVERDUE   { background: #fdf1f0; color: var(--danger); }
+    .status-CANCELLED { background: #f5f5f5; color: var(--ink-soft); }
+    .status-REFUNDED  { background: #f5f5f5; color: var(--ink-soft); }
+
+    .envio-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .envio-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.7; flex-shrink: 0; }
+    .envio-aguardando { background: #fef9ec; color: #b7791f; }
+    .envio-postado    { background: #e8f4fd; color: #2980b9; }
+    .envio-entregue   { background: #edf7ef; color: var(--success); }
+
+    .btn-icon {
+      width: 32px; height: 32px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink-soft); font-size: 14px;
+      transition: all 0.15s; flex-shrink: 0;
+    }
+    .btn-icon:hover { border-color: var(--ink); color: var(--ink); background: var(--bg); }
+
+    /* ── MODAL PEDIDO ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(26,24,20,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 680px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-hover);
+      animation: slideIn 0.25s ease;
+    }
+    .modal-header {
+      padding: 28px 32px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .modal-header h3 {
       font-family: var(--font-serif);
       font-size: 24px;
       font-weight: 300;
       font-style: italic;
-      color: var(--ink);
     }
-    .count-badge {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      color: var(--white);
-      background: var(--ink);
-      padding: 2px 9px;
-      border-radius: 20px;
-    }
-
-    .produto-list { display: flex; flex-direction: column; gap: 2px; }
-
-    .produto-item {
-      display: grid;
-      grid-template-columns: 56px 1fr auto;
-      gap: 14px;
-      align-items: center;
-      padding: 12px;
-      border-radius: var(--radius);
-      transition: background 0.15s;
-      cursor: default;
-    }
-    .produto-item:hover { background: var(--bg); }
-
-    .produto-item-img {
-      width: 56px;
-      height: 56px;
-      object-fit: cover;
-      border-radius: var(--radius);
-      background: var(--bg);
-      border: 1px solid var(--line);
-    }
-
-    .produto-item-info { min-width: 0; }
-    .produto-item-info h4 {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 3px;
-    }
-    .produto-item-meta {
-      font-size: 11px;
-      color: var(--ink-soft);
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .meta-dot { color: var(--ink-faint); }
-
-    .btn-del {
-      width: 30px;
-      height: 30px;
-      border: 1px solid transparent;
-      background: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--ink-faint);
-      font-size: 16px;
+    .modal-header span { font-size: 11px; color: var(--ink-soft); margin-top: 4px; display: block; }
+    .btn-close {
+      width: 32px; height: 32px; border: 1px solid var(--line);
+      background: none; border-radius: var(--radius); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink-soft); font-size: 18px; flex-shrink: 0;
       transition: all 0.15s;
-      flex-shrink: 0;
     }
-    .btn-del:hover { border-color: var(--danger); color: var(--danger); background: #fdf1f0; }
-
-    .list-empty {
-      font-family: var(--font-serif);
-      font-style: italic;
-      font-size: 16px;
-      color: var(--ink-faint);
-      text-align: center;
-      padding: 48px 0;
+    .btn-close:hover { border-color: var(--ink); color: var(--ink); }
+    .modal-body { padding: 24px 32px 32px; }
+    .modal-section { margin-bottom: 24px; }
+    .modal-section-title {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--ink-faint);
+      margin-bottom: 12px; display: flex; align-items: center; gap: 12px;
     }
+    .modal-section-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+    .modal-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-info-item label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); display: block; margin-bottom: 3px; }
+    .modal-info-item span { font-size: 13px; color: var(--ink); }
+    .modal-itens { display: flex; flex-direction: column; gap: 8px; }
+    .modal-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 12px; background: var(--bg); border-radius: var(--radius);
+    }
+    .modal-item-info { font-size: 13px; font-weight: 500; }
+    .modal-item-info span { font-size: 11px; color: var(--ink-soft); display: block; margin-top: 2px; }
+    .modal-item-price { font-size: 13px; font-weight: 700; }
 
-    .list-loading-spinner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      padding: 48px 0;
-      color: var(--ink-faint);
-      font-size: 11px;
-      letter-spacing: 0.15em;
+    .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+    .btn-action {
+      flex: 1;
+      padding: 12px 20px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
     }
-    .spinner {
-      width: 20px; height: 20px;
-      border: 2px solid var(--line);
-      border-top-color: var(--ink-soft);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-action:hover { border-color: var(--ink); color: var(--ink); background: var(--bg); }
+    .btn-action.primary { background: var(--ink); color: white; border-color: var(--ink); }
+    .btn-action.primary:hover { background: var(--accent-hover); }
+    .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* ── DIVIDER ── */
-    .list-divider {
-      height: 1px;
-      background: var(--line);
-      margin: 20px 0;
+    .rastreio-input {
+      display: flex; gap: 8px; margin-top: 12px;
     }
+    .rastreio-input input {
+      flex: 1; padding: 10px 14px;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      font-family: var(--font-body); font-size: 13px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .rastreio-input input:focus { border-color: var(--ink); }
+    .rastreio-input button {
+      padding: 10px 18px;
+      background: var(--ink); color: white; border: none;
+      border-radius: var(--radius); font-family: var(--font-body);
+      font-size: 10px; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; cursor: pointer; transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .rastreio-input button:hover { background: var(--accent-hover); }
 
     @media (max-width: 960px) {
       .admin-body { grid-template-columns: 1fr; }
-      .list-panel { position: static; max-height: none; border-top: 1px solid var(--line); }
-      .form-panel, .list-panel { padding: 32px 24px; }
-      .admin-header { padding: 0 24px; }
+      .list-panel { position: static; max-height: none; }
+      .form-panel, .list-panel, .pedidos-panel { padding: 24px 20px; }
+      .admin-header, .admin-tabs { padding: 0 20px; }
+      .pedidos-stats { grid-template-columns: 1fr 1fr; }
+      .pedidos-table-header, .pedido-row { grid-template-columns: 1fr auto auto; }
+      .pedidos-table-header .col-metodo,
+      .pedidos-table-header .col-envio,
+      .pedido-row .col-metodo,
+      .pedido-row .col-envio { display: none; }
     }
   </style>
 </head>
@@ -503,118 +562,177 @@
 
 <!-- HEADER -->
 <header class="admin-header">
-  <h1>S33D — Admin</h1>
-  <span id="admin-user-badge"></span>
-  <div style="display:flex;gap:12px;align-items:center;">
-    <button onclick="fazerLogout()" class="back-link" style="background:none;cursor:pointer;">Sair</button>
+  <div class="header-left">
+    <img src="assets/produtos/img/S33D.png" alt="S33D" style="height:40px;width:auto;object-fit:contain;">
+  </div>
+  <div style="display:flex;gap:16px;align-items:center;">
+    <span id="admin-user-badge" style="font-size:11px;color:var(--ink-soft);letter-spacing:0.05em;"></span>>
+    <button onclick="fazerLogout()" class="back-link">Sair</button>
   </div>
 </header>
 
-<div class="admin-body">
+<!-- TABS -->
+<div class="admin-tabs">
+  <button class="tab-btn active" onclick="trocarAba('produtos', this)">Produtos</button>
+  <button class="tab-btn" onclick="trocarAba('pedidos', this)">Pedidos</button>
+</div>
 
-  <!-- FORMULÁRIO -->
-  <div class="form-panel">
-    <div class="panel-heading">
-      <h2>Novo Produto</h2>
-      <p>Preencha os dados abaixo para cadastrar</p>
-    </div>
-
-    <!-- Informações básicas -->
-    <div class="form-section">
-      <div class="section-label">Informações</div>
-      <div class="field-row" style="margin-bottom:16px;">
-        <div class="field">
-          <label>Nome do produto</label>
-          <input type="text" id="nome" placeholder="Ex: Seed Oversized Preta" />
-        </div>
-        <div class="field">
-          <label>Preço (R$)</label>
-          <input type="number" id="preco" placeholder="99.90" step="0.01" min="0" />
-        </div>
+<!-- ABA PRODUTOS -->
+<div class="tab-content active" id="aba-produtos">
+  <div class="admin-body">
+    <div class="form-panel">
+      <div class="panel-heading">
+        <h2>Novo Produto</h2>
+        <p>Preencha os dados abaixo para cadastrar</p>
       </div>
-      <div class="field-row full">
-        <div class="field">
-          <label>Categoria</label>
-          <select id="categoria">
-            <option value="">Selecionar categoria...</option>
-            <option value="oversized">Oversized</option>
-            <option value="essential">Essential</option>
-            <option value="limited">Limited Edition</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Imagens -->
-    <div class="form-section">
-      <div class="section-label">Imagens</div>
-      <div class="field">
-        <label>URLs do Cloudinary</label>
-        <div class="url-list" id="url-list">
-          <div class="url-row">
-            <input type="url" class="url-input" placeholder="https://res.cloudinary.com/..." oninput="atualizarPreviews()" />
-            <button class="btn-sq" onclick="adicionarUrl()" title="Adicionar">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </button>
-            <button class="btn-sq remove" onclick="removerUrl(this)" title="Remover">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </button>
+      <div class="form-section">
+        <div class="section-label">Informações</div>
+        <div class="field-row" style="margin-bottom:16px;">
+          <div class="field">
+            <label>Nome do produto</label>
+            <input type="text" id="nome" placeholder="Ex: Seed Oversized Preta" />
+          </div>
+          <div class="field">
+            <label>Preço (R$)</label>
+            <input type="number" id="preco" placeholder="99.90" step="0.01" min="0" />
           </div>
         </div>
-        <button class="btn-add-url" onclick="adicionarUrl()">+ Adicionar outra imagem</button>
+        <div class="field-row full">
+          <div class="field">
+            <label>Categoria</label>
+            <select id="categoria">
+              <option value="">Selecionar categoria...</option>
+              <option value="oversized">Oversized</option>
+              <option value="essential">Essential</option>
+              <option value="limited">Limited Edition</option>
+            </select>
+          </div>
+        </div>
       </div>
-
-      <div id="previews-wrap" style="display:none;">
-        <div class="previews-strip" id="previews-strip"></div>
+      <div class="form-section">
+        <div class="section-label">Imagens</div>
+        <div class="field">
+          <label>URLs do Cloudinary</label>
+          <div class="url-list" id="url-list">
+            <div class="url-row">
+              <input type="url" class="url-input" placeholder="https://res.cloudinary.com/..." oninput="atualizarPreviews()" />
+              <button class="btn-sq" onclick="adicionarUrl()" title="Adicionar">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <button class="btn-sq remove" onclick="removerUrl(this)" title="Remover">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <button class="btn-add-url" onclick="adicionarUrl()">+ Adicionar outra imagem</button>
+        </div>
+        <div id="previews-wrap" style="display:none;">
+          <div class="previews-strip" id="previews-strip"></div>
+        </div>
       </div>
+      <div class="form-section">
+        <div class="section-label">Tamanhos</div>
+        <div class="sizes-grid">
+          <input type="checkbox" class="size-check" id="sz-pp" value="PP"><label class="size-label" for="sz-pp">PP</label>
+          <input type="checkbox" class="size-check" id="sz-p"  value="P" ><label class="size-label" for="sz-p">P</label>
+          <input type="checkbox" class="size-check" id="sz-m"  value="M" ><label class="size-label" for="sz-m">M</label>
+          <input type="checkbox" class="size-check" id="sz-g"  value="G" ><label class="size-label" for="sz-g">G</label>
+          <input type="checkbox" class="size-check" id="sz-gg" value="GG"><label class="size-label" for="sz-gg">GG</label>
+          <input type="checkbox" class="size-check" id="sz-xg" value="XG"><label class="size-label" for="sz-xg">XG</label>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="section-label">Estoque</div>
+        <div id="estoque-container">
+          <p class="estoque-empty">Selecione os tamanhos acima para definir o estoque.</p>
+        </div>
+      </div>
+      <div id="status-msg" class="status-msg"></div>
+      <button class="btn-submit" id="btn-submit" onclick="salvarProduto()">Salvar produto</button>
     </div>
 
-    <!-- Tamanhos -->
-    <div class="form-section">
-      <div class="section-label">Tamanhos</div>
-      <div class="sizes-grid">
-        <input type="checkbox" class="size-check" id="sz-pp" value="PP"><label class="size-label" for="sz-pp">PP</label>
-        <input type="checkbox" class="size-check" id="sz-p"  value="P" ><label class="size-label" for="sz-p">P</label>
-        <input type="checkbox" class="size-check" id="sz-m"  value="M" ><label class="size-label" for="sz-m">M</label>
-        <input type="checkbox" class="size-check" id="sz-g"  value="G" ><label class="size-label" for="sz-g">G</label>
-        <input type="checkbox" class="size-check" id="sz-gg" value="GG"><label class="size-label" for="sz-gg">GG</label>
-        <input type="checkbox" class="size-check" id="sz-xg" value="XG"><label class="size-label" for="sz-xg">XG</label>
+    <div class="list-panel">
+      <div class="list-heading">
+        <h3>Produtos</h3>
+        <span class="count-badge" id="produto-count">0</span>
+      </div>
+      <div class="produto-list" id="produto-list">
+        <div class="list-loading-spinner"><div class="spinner"></div><span>Carregando</span></div>
       </div>
     </div>
-
-    <!-- Estoque -->
-    <div class="form-section">
-      <div class="section-label">Estoque</div>
-      <div id="estoque-container">
-        <p class="estoque-empty">Selecione os tamanhos acima para definir o estoque.</p>
-      </div>
-    </div>
-
-    <!-- Actions -->
-    <div id="status-msg" class="status-msg"></div>
-    <button class="btn-submit" id="btn-submit" onclick="salvarProduto()">Salvar produto</button>
-
   </div>
+</div>
 
-  <!-- LISTA -->
-  <div class="list-panel">
-    <div class="list-heading">
-      <h3>Produtos</h3>
-      <span class="count-badge" id="produto-count">0</span>
+<!-- ABA PEDIDOS -->
+<div class="tab-content" id="aba-pedidos">
+  <div class="pedidos-panel">
+    <div class="pedidos-header">
+      <div>
+        <h2>Pedidos</h2>
+        <p style="font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px;">Controle de vendas e envio</p>
+      </div>
+      <div class="pedidos-filtros">
+        <button class="filtro-btn active" onclick="filtrarPedidos('todos', this)">Todos</button>
+        <button class="filtro-btn" onclick="filtrarPedidos('PENDING', this)">Pendentes</button>
+        <button class="filtro-btn" onclick="filtrarPedidos('CONFIRMED', this)">Pagos</button>
+        <button class="filtro-btn" onclick="filtrarPedidos('aguardando', this)">Aguard. envio</button>
+      </div>
     </div>
-    <div class="produto-list" id="produto-list">
-      <div class="list-loading-spinner">
-        <div class="spinner"></div>
-        <span>Carregando</span>
+
+    <!-- Stats -->
+    <div class="pedidos-stats">
+      <div class="stat-card">
+        <div class="stat-card-label">Total de pedidos</div>
+        <div class="stat-card-value" id="stat-total">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Receita total</div>
+        <div class="stat-card-value" id="stat-receita">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Pagos</div>
+        <div class="stat-card-value" id="stat-pagos">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Aguard. envio</div>
+        <div class="stat-card-value" id="stat-envio">—</div>
+      </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="pedidos-table">
+      <div class="pedidos-table-header">
+        <span>Cliente</span>
+        <span>Valor</span>
+        <span class="col-metodo">Pagamento</span>
+        <span class="col-envio">Envio</span>
+        <span>Data</span>
+        <span></span>
+      </div>
+      <div id="pedidos-list">
+        <div class="list-loading-spinner"><div class="spinner"></div><span>Carregando</span></div>
       </div>
     </div>
   </div>
+</div>
 
+<!-- MODAL DETALHES PEDIDO -->
+<div class="modal-overlay" id="modal-overlay" onclick="fecharModal(event)">
+  <div class="modal" id="modal-pedido">
+    <div class="modal-header">
+      <div>
+        <h3>Detalhes do Pedido</h3>
+        <span id="modal-pedido-id"></span>
+      </div>
+      <button class="btn-close" onclick="fecharModalBtn()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc }
+  import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc, orderBy, query }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -627,40 +745,49 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const db  = getFirestore(app);
 
-  // ── URLs de imagem ─────────────────────────────────
-  const addIcon = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+  const BACKEND_URL = 'https://projeto-seed-production.up.railway.app';
+
+  // ── Abas ────────────────────────────────────────────
+  window.trocarAba = function(aba, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+    document.getElementById(`aba-${aba}`).classList.add('active');
+    btn.classList.add('active');
+    if (aba === 'pedidos') carregarPedidos();
+  };
+
+  // ════════════════════════════════════════════════════
+  // PRODUTOS
+  // ════════════════════════════════════════════════════
+  const addIcon    = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
   const removeIcon = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 
   window.adicionarUrl = function() {
     const list = document.getElementById('url-list');
-    const row = document.createElement('div');
+    const row  = document.createElement('div');
     row.className = 'url-row';
     row.innerHTML = `
       <input type="url" class="url-input" placeholder="https://res.cloudinary.com/..." oninput="atualizarPreviews()" />
       <button class="btn-sq" onclick="adicionarUrl()" title="Adicionar">${addIcon}</button>
-      <button class="btn-sq remove" onclick="removerUrl(this)" title="Remover">${removeIcon}</button>
-    `;
+      <button class="btn-sq remove" onclick="removerUrl(this)" title="Remover">${removeIcon}</button>`;
     list.appendChild(row);
     row.querySelector('input').focus();
   };
 
   window.removerUrl = function(btn) {
     const rows = document.querySelectorAll('#url-list .url-row');
-    if (rows.length <= 1) {
-      btn.closest('.url-row').querySelector('input').value = '';
-    } else {
-      btn.closest('.url-row').remove();
-    }
+    if (rows.length <= 1) { btn.closest('.url-row').querySelector('input').value = ''; }
+    else { btn.closest('.url-row').remove(); }
     atualizarPreviews();
   };
 
   window.atualizarPreviews = function() {
-    const urls = getUrls().filter(u => u.startsWith('http'));
-    const wrap = document.getElementById('previews-wrap');
+    const urls  = getUrls().filter(u => u.startsWith('http'));
+    const wrap  = document.getElementById('previews-wrap');
     const strip = document.getElementById('previews-strip');
-    if (urls.length === 0) { wrap.style.display = 'none'; return; }
+    if (!urls.length) { wrap.style.display = 'none'; return; }
     wrap.style.display = 'block';
     strip.innerHTML = urls.map((url, i) => `
       <div class="preview-item">
@@ -673,26 +800,19 @@
     return [...document.querySelectorAll('.url-input')].map(i => i.value.trim()).filter(Boolean);
   }
 
-  // ── Tamanhos → Estoque ─────────────────────────────
   document.querySelectorAll('.size-check').forEach(cb => cb.addEventListener('change', atualizarEstoque));
 
   function atualizarEstoque() {
-    const selecionados = [...document.querySelectorAll('.size-check:checked')].map(c => c.value);
-    const container = document.getElementById('estoque-container');
-    if (selecionados.length === 0) {
-      container.innerHTML = '<p class="estoque-empty">Selecione os tamanhos acima para definir o estoque.</p>';
-      return;
-    }
-    container.innerHTML = `<div class="estoque-grid">${
-      selecionados.map(t => `
-        <div class="estoque-field">
-          <label>${t}</label>
-          <input type="number" id="estoque-${t}" value="5" min="0" />
-        </div>`).join('')
-    }</div>`;
+    const sel = [...document.querySelectorAll('.size-check:checked')].map(c => c.value);
+    const c   = document.getElementById('estoque-container');
+    if (!sel.length) { c.innerHTML = '<p class="estoque-empty">Selecione os tamanhos acima para definir o estoque.</p>'; return; }
+    c.innerHTML = `<div class="estoque-grid">${sel.map(t => `
+      <div class="estoque-field">
+        <label>${t}</label>
+        <input type="number" id="estoque-${t}" value="5" min="0" />
+      </div>`).join('')}</div>`;
   }
 
-  // ── Salvar ─────────────────────────────────────────
   window.salvarProduto = async function() {
     const nome      = document.getElementById('nome').value.trim();
     const preco     = parseFloat(document.getElementById('preco').value);
@@ -700,8 +820,8 @@
     const imagens   = getUrls().filter(u => u.startsWith('http'));
     const tamanhos  = [...document.querySelectorAll('.size-check:checked')].map(c => c.value);
 
-    if (!nome || isNaN(preco) || !categoria || imagens.length === 0 || tamanhos.length === 0) {
-      showStatus('Preencha todos os campos, adicione ao menos uma imagem e selecione ao menos um tamanho.', 'error');
+    if (!nome || isNaN(preco) || !categoria || !imagens.length || !tamanhos.length) {
+      showStatusProduto('Preencha todos os campos, adicione ao menos uma imagem e selecione ao menos um tamanho.', 'error');
       return;
     }
 
@@ -710,20 +830,19 @@
 
     const btn = document.getElementById('btn-submit');
     btn.disabled = true; btn.textContent = 'Salvando...';
-
     try {
       await addDoc(collection(db, 'produtos'), { nome, preco, categoria, imagem: imagens[0], imagens, tamanhos, estoque });
-      showStatus(`"${nome}" adicionado com sucesso.`, 'success');
+      showStatusProduto(`"${nome}" adicionado com sucesso.`, 'success');
       limpar();
       carregarProdutos();
     } catch (err) {
-      showStatus('Erro: ' + err.message, 'error');
+      showStatusProduto('Erro: ' + err.message, 'error');
     } finally {
       btn.disabled = false; btn.textContent = 'Salvar produto';
     }
   };
 
-  function showStatus(msg, tipo) {
+  function showStatusProduto(msg, tipo) {
     const el = document.getElementById('status-msg');
     el.textContent = msg; el.className = `status-msg ${tipo}`; el.style.display = 'block';
     setTimeout(() => { el.style.display = 'none'; }, 4000);
@@ -732,37 +851,28 @@
   function limpar() {
     ['nome','preco'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('categoria').value = '';
-    document.getElementById('url-list').innerHTML = `
-      <div class="url-row">
-        <input type="url" class="url-input" placeholder="https://res.cloudinary.com/..." oninput="atualizarPreviews()" />
-        <button class="btn-sq" onclick="adicionarUrl()" title="Adicionar">${addIcon}</button>
-        <button class="btn-sq remove" onclick="removerUrl(this)" title="Remover">${removeIcon}</button>
-      </div>`;
+    document.getElementById('url-list').innerHTML = `<div class="url-row">
+      <input type="url" class="url-input" placeholder="https://res.cloudinary.com/..." oninput="atualizarPreviews()" />
+      <button class="btn-sq" onclick="adicionarUrl()" title="Adicionar">${addIcon}</button>
+      <button class="btn-sq remove" onclick="removerUrl(this)" title="Remover">${removeIcon}</button>
+    </div>`;
     document.getElementById('previews-wrap').style.display = 'none';
     document.querySelectorAll('.size-check').forEach(c => c.checked = false);
-    document.getElementById('estoque-container').innerHTML =
-      '<p class="estoque-empty">Selecione os tamanhos acima para definir o estoque.</p>';
+    document.getElementById('estoque-container').innerHTML = '<p class="estoque-empty">Selecione os tamanhos acima para definir o estoque.</p>';
   }
 
-  // ── Listar ─────────────────────────────────────────
   async function carregarProdutos() {
     const list = document.getElementById('produto-list');
     list.innerHTML = `<div class="list-loading-spinner"><div class="spinner"></div><span>Carregando</span></div>`;
-
     try {
       const snap = await getDocs(collection(db, 'produtos'));
       document.getElementById('produto-count').textContent = snap.size;
-
-      if (snap.empty) {
-        list.innerHTML = '<p class="list-empty">Nenhum produto ainda.</p>';
-        return;
-      }
-
+      if (snap.empty) { list.innerHTML = '<p class="list-empty">Nenhum produto ainda.</p>'; return; }
       list.innerHTML = '';
-      snap.forEach((d, i) => {
+      snap.forEach(d => {
         const p = d.data();
         const img = (p.imagens && p.imagens[0]) || p.imagem || '';
-        const qtdFotos = (p.imagens || [p.imagem]).filter(Boolean).length;
+        const qtd = (p.imagens || [p.imagem]).filter(Boolean).length;
         const item = document.createElement('div');
         item.className = 'produto-item';
         item.innerHTML = `
@@ -774,13 +884,12 @@
               <span class="meta-dot">·</span>
               <span>${p.categoria || '—'}</span>
               <span class="meta-dot">·</span>
-              <span>${qtdFotos} foto${qtdFotos !== 1 ? 's' : ''}</span>
+              <span>${qtd} foto${qtd !== 1 ? 's' : ''}</span>
             </div>
           </div>
           <button class="btn-del" onclick="deletar('${d.id}', this)" title="Excluir">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </button>
-        `;
+          </button>`;
         list.appendChild(item);
       });
     } catch (err) {
@@ -798,6 +907,237 @@
     } catch (err) { alert('Erro: ' + err.message); }
   };
 
+  // ════════════════════════════════════════════════════
+  // PEDIDOS
+  // ════════════════════════════════════════════════════
+  let todosPedidos = [];
+  let filtroAtivo  = 'todos';
+
+  const fmt = v => new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' }).format(v);
+
+  const statusLabel = {
+    PENDING:   'Pendente',
+    CONFIRMED: 'Pago',
+    RECEIVED:  'Pago',
+    OVERDUE:   'Vencido',
+    CANCELLED: 'Cancelado',
+    REFUNDED:  'Estornado',
+  };
+
+  const envioLabel = {
+    aguardando: 'Aguard. envio',
+    postado:    'Postado',
+    entregue:   'Entregue',
+  };
+
+  async function carregarPedidos() {
+    const list = document.getElementById('pedidos-list');
+    list.innerHTML = `<div class="list-loading-spinner"><div class="spinner"></div><span>Carregando</span></div>`;
+    try {
+      const snap = await getDocs(query(collection(db, 'pedidos'), orderBy('criadoEm', 'desc')));
+      todosPedidos = [];
+      snap.forEach(d => todosPedidos.push({ id: d.id, ...d.data() }));
+      atualizarStats();
+      renderizarPedidos(todosPedidos);
+    } catch (err) {
+      list.innerHTML = `<p class="list-empty" style="color:var(--danger);">Erro: ${err.message}</p>`;
+    }
+  }
+
+  function atualizarStats() {
+    const pagos = todosPedidos.filter(p => ['CONFIRMED','RECEIVED'].includes(p.pagamento?.status));
+    const aguardando = todosPedidos.filter(p =>
+      ['CONFIRMED','RECEIVED'].includes(p.pagamento?.status) &&
+      (!p.envio?.status || p.envio?.status === 'aguardando')
+    );
+    const receita = pagos.reduce((s, p) => s + (p.total || 0), 0);
+
+    document.getElementById('stat-total').textContent   = todosPedidos.length;
+    document.getElementById('stat-receita').textContent = fmt(receita);
+    document.getElementById('stat-pagos').textContent   = pagos.length;
+    document.getElementById('stat-envio').textContent   = aguardando.length;
+  }
+
+  function renderizarPedidos(pedidos) {
+    const list = document.getElementById('pedidos-list');
+    if (!pedidos.length) { list.innerHTML = '<p class="list-empty">Nenhum pedido encontrado.</p>'; return; }
+    list.innerHTML = '';
+    pedidos.forEach(p => {
+      const status  = p.pagamento?.status || 'PENDING';
+      const envio   = p.envio?.status || 'aguardando';
+      const data    = p.criadoEm?.toDate ? p.criadoEm.toDate() : new Date(p.criadoEm);
+      const dataStr = data.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit' });
+
+      const row = document.createElement('div');
+      row.className = 'pedido-row';
+      row.innerHTML = `
+        <div class="pedido-cliente">
+          <h4>${p.cliente?.nome || '—'}</h4>
+          <span>${p.cliente?.email || ''}</span>
+        </div>
+        <div class="pedido-valor">${fmt(p.total || 0)}</div>
+        <div class="col-metodo">
+          <span class="status-badge status-${status}">${statusLabel[status] || status}</span>
+        </div>
+        <div class="col-envio">
+          <span class="envio-badge envio-${envio}">${envioLabel[envio] || envio}</span>
+        </div>
+        <div style="font-size:12px;color:var(--ink-soft);">${dataStr}</div>
+        <button class="btn-icon" onclick="abrirModal('${p.id}')" title="Ver detalhes">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 6v4M7 4.5v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>`;
+      list.appendChild(row);
+    });
+  }
+
+  window.filtrarPedidos = function(filtro, btn) {
+    filtroAtivo = filtro;
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    let resultado = todosPedidos;
+    if (filtro === 'PENDING')    resultado = todosPedidos.filter(p => p.pagamento?.status === 'PENDING');
+    if (filtro === 'CONFIRMED')  resultado = todosPedidos.filter(p => ['CONFIRMED','RECEIVED'].includes(p.pagamento?.status));
+    if (filtro === 'aguardando') resultado = todosPedidos.filter(p =>
+      ['CONFIRMED','RECEIVED'].includes(p.pagamento?.status) &&
+      (!p.envio?.status || p.envio?.status === 'aguardando')
+    );
+    renderizarPedidos(resultado);
+  };
+
+  // ── Modal ────────────────────────────────────────────
+  window.abrirModal = function(pedidoId) {
+    const p = todosPedidos.find(x => x.id === pedidoId);
+    if (!p) return;
+
+    const status = p.pagamento?.status || 'PENDING';
+    const envio  = p.envio?.status || 'aguardando';
+    const pago   = ['CONFIRMED','RECEIVED'].includes(status);
+
+    document.getElementById('modal-pedido-id').textContent = `#${pedidoId.slice(-8).toUpperCase()}`;
+    document.getElementById('modal-body').innerHTML = `
+      <div class="modal-section">
+        <div class="modal-section-title">Cliente</div>
+        <div class="modal-info-grid">
+          <div class="modal-info-item"><label>Nome</label><span>${p.cliente?.nome || '—'}</span></div>
+          <div class="modal-info-item"><label>E-mail</label><span>${p.cliente?.email || '—'}</span></div>
+          <div class="modal-info-item"><label>CPF</label><span>${p.cliente?.cpf || '—'}</span></div>
+          <div class="modal-info-item"><label>Telefone</label><span>${p.cliente?.telefone || '—'}</span></div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Entrega</div>
+        <div class="modal-info-grid">
+          <div class="modal-info-item"><label>Endereço</label><span>${p.endereco?.rua || '—'}, ${p.endereco?.numero || ''}</span></div>
+          <div class="modal-info-item"><label>Bairro / Cidade</label><span>${p.endereco?.bairro || '—'} — ${p.endereco?.cidade || ''}/${p.endereco?.uf || ''}</span></div>
+          <div class="modal-info-item"><label>CEP</label><span>${p.endereco?.cep || '—'}</span></div>
+          <div class="modal-info-item"><label>Transportadora</label><span>${p.frete?.empresa || '—'} ${p.frete?.servico || ''}</span></div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Itens</div>
+        <div class="modal-itens">
+          ${(p.itens || []).map(item => `
+            <div class="modal-item">
+              <div class="modal-item-info">
+                ${item.nome}
+                <span>Tam: ${item.tamanho || '—'} · Qtd: ${item.quantidade}</span>
+              </div>
+              <div class="modal-item-price">${fmt(item.preco * item.quantidade)}</div>
+            </div>`).join('')}
+          <div class="modal-item" style="background:none;border-top:1px solid var(--line);margin-top:4px;">
+            <div class="modal-item-info">Frete (${p.frete?.empresa || '—'})</div>
+            <div class="modal-item-price">${fmt(p.frete?.preco || 0)}</div>
+          </div>
+          <div class="modal-item" style="background:none;">
+            <div class="modal-item-info" style="font-weight:700;">Total</div>
+            <div class="modal-item-price">${fmt(p.total || 0)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Pagamento</div>
+        <div class="modal-info-grid">
+          <div class="modal-info-item"><label>Método</label><span>${p.pagamento?.metodo === 'pix' ? 'PIX' : 'Cartão'}</span></div>
+          <div class="modal-info-item"><label>Status</label><span class="status-badge status-${status}">${statusLabel[status] || status}</span></div>
+          <div class="modal-info-item"><label>ID Asaas</label><span style="font-size:11px;">${p.pagamento?.asaasId || '—'}</span></div>
+          <div class="modal-info-item"><label>Parcelas</label><span>${p.pagamento?.parcelas || 1}x</span></div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Envio</div>
+        <div class="modal-info-grid" style="margin-bottom:12px;">
+          <div class="modal-info-item"><label>Status</label><span class="envio-badge envio-${envio}">${envioLabel[envio] || envio}</span></div>
+          <div class="modal-info-item"><label>Rastreio</label><span>${p.envio?.rastreio || '—'}</span></div>
+        </div>
+        ${pago ? `
+          <div class="rastreio-input">
+            <input type="text" id="rastreio-input" placeholder="Código de rastreio (ex: AA123456789BR)" value="${p.envio?.rastreio || ''}" />
+            <button onclick="salvarRastreio('${pedidoId}')">Salvar</button>
+          </div>` : '<p style="font-size:12px;color:var(--ink-faint);font-style:italic;">Aguardando confirmação do pagamento.</p>'}
+      </div>
+
+      <div class="modal-actions">
+        ${pago && envio === 'aguardando' ? `<button class="btn-action primary" onclick="marcarPostado('${pedidoId}')">✓ Marcar como postado</button>` : ''}
+        ${envio === 'postado' ? `<button class="btn-action primary" onclick="marcarEntregue('${pedidoId}')">✓ Marcar como entregue</button>` : ''}
+        <button class="btn-action" onclick="fecharModalBtn()">Fechar</button>
+      </div>
+    `;
+
+    document.getElementById('modal-overlay').classList.add('open');
+  };
+
+  window.fecharModal = function(e) {
+    if (e.target === document.getElementById('modal-overlay')) fecharModalBtn();
+  };
+  window.fecharModalBtn = function() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  };
+
+  window.salvarRastreio = async function(pedidoId) {
+    const rastreio = document.getElementById('rastreio-input').value.trim();
+    if (!rastreio) return;
+    try {
+      await updateDoc(doc(db, 'pedidos', pedidoId), {
+        'envio.rastreio':     rastreio,
+        'envio.status':       'postado',
+        'atualizadoEm':       new Date(),
+      });
+      const idx = todosPedidos.findIndex(p => p.id === pedidoId);
+      if (idx >= 0) { todosPedidos[idx].envio = { ...todosPedidos[idx].envio, rastreio, status: 'postado' }; }
+      fecharModalBtn();
+      carregarPedidos();
+    } catch (err) { alert('Erro: ' + err.message); }
+  };
+
+  window.marcarPostado = async function(pedidoId) {
+    const rastreio = document.getElementById('rastreio-input')?.value.trim() || '';
+    try {
+      await updateDoc(doc(db, 'pedidos', pedidoId), {
+        'envio.status':   'postado',
+        'envio.rastreio': rastreio,
+        'atualizadoEm':   new Date(),
+      });
+      fecharModalBtn();
+      carregarPedidos();
+    } catch (err) { alert('Erro: ' + err.message); }
+  };
+
+  window.marcarEntregue = async function(pedidoId) {
+    try {
+      await updateDoc(doc(db, 'pedidos', pedidoId), {
+        'envio.status': 'entregue',
+        'atualizadoEm': new Date(),
+      });
+      fecharModalBtn();
+      carregarPedidos();
+    } catch (err) { alert('Erro: ' + err.message); }
+  };
+
+  // Init
   carregarProdutos();
 </script>
 <script type="module" src="js/admin-auth.js"></script>
