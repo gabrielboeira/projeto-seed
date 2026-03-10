@@ -563,10 +563,12 @@
 <!-- HEADER -->
 <header class="admin-header">
   <div class="header-left">
-    <img src="assets/produtos/img/S33D.png" alt="S33D" style="height:40px;width:auto;object-fit:contain;">
+    <span class="logo">S33D</span>
+    <span class="header-badge">Admin</span>
   </div>
   <div style="display:flex;gap:16px;align-items:center;">
-    <span id="admin-user-badge" style="font-size:11px;color:var(--ink-soft);letter-spacing:0.05em;"></span>>
+    <span id="admin-user-badge" style="font-size:11px;color:var(--ink-soft);letter-spacing:0.05em;"></span>
+    <a href="index.html" class="back-link">← Loja</a>
     <button onclick="fazerLogout()" class="back-link">Sair</button>
   </div>
 </header>
@@ -1121,6 +1123,18 @@
         'envio.rastreio': rastreio,
         'atualizadoEm':   new Date(),
       });
+
+      // Notifica o backend para enviar e-mail de rastreio
+      if (rastreio) {
+        try {
+          await fetch(`${BACKEND_URL}/api/pedidos/${pedidoId}/rastreio`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rastreio }),
+          });
+        } catch (e) { console.error('Erro ao enviar e-mail rastreio:', e); }
+      }
+
       fecharModalBtn();
       carregarPedidos();
     } catch (err) { alert('Erro: ' + err.message); }

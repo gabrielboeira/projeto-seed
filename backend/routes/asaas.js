@@ -2,6 +2,7 @@ const express = require('express');
 const axios   = require('axios');
 const router  = express.Router();
 const { db }  = require('../firebase-admin');
+const { enviarConfirmacaoPedido, enviarPagamentoConfirmado, enviarRastreio } = require('../email');
 
 const ASAAS_URL = process.env.ASAAS_SANDBOX === 'true'
   ? 'https://sandbox.asaas.com/api/v3'
@@ -94,6 +95,14 @@ router.post('/pix', async (req, res) => {
       metodo: 'pix',
     });
 
+    // Envia e-mail de confirmação
+    try {
+      const pedidoSalvo = await db.collection('pedidos').doc(cobranca.data.id).get();
+      await enviarConfirmacaoPedido({ id: cobranca.data.id, ...pedidoSalvo.data() });
+    } catch (emailErr) {
+      console.error('Erro ao enviar e-mail PIX:', emailErr.message);
+    }
+
     return res.json({
       pagamentoId: cobranca.data.id,
       status:      cobranca.data.status,
@@ -160,6 +169,14 @@ router.post('/cartao', async (req, res) => {
       metodo: 'cartao',
     });
 
+    // Envia e-mail de confirmação
+    try {
+      const pedidoSalvo = await db.collection('pedidos').doc(cobranca.data.id).get();
+      await enviarConfirmacaoPedido({ id: cobranca.data.id, ...pedidoSalvo.data() });
+    } catch (emailErr) {
+      console.error('Erro ao enviar e-mail cartão:', emailErr.message);
+    }
+
     return res.json({
       pagamentoId: cobranca.data.id,
       status:      cobranca.data.status,
@@ -218,6 +235,18 @@ router.post('/webhook', async (req, res) => {
     });
 
     console.log(`✅ Pedido ${pagamentoId} atualizado para ${novoStatus}`);
+
+    // Envia e-mail de pagamento confirmado
+    if (novoStatus === 'CONFIRMED' || novoStatus === 'RECEIVED') {
+      try {
+        const pedidoDoc = await db.collection('pedidos').doc(pagamentoId).get();
+        if (pedidoDoc.exists) {
+          await enviarPagamentoConfirmado({ id: pagamentoId, ...pedidoDoc.data() });
+        }
+      } catch (emailErr) {
+        console.error('Erro ao enviar e-mail confirmação:', emailErr.message);
+      }
+    }
   } catch (err) {
     console.error('Erro webhook:', err.message);
   }

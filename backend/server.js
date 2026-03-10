@@ -18,6 +18,10 @@ app.use(express.json());
 app.use('/api/pagamento', asaasRoutes);
 app.use('/api/frete',     melhorEnvioRoutes);
 
+//email-auto
+const pedidosRoutes = require('./routes/pedidos');
+app.use('/api/pedidos', pedidosRoutes);
+
 // ── Health check ─────────────────────────────────────
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'S33D Backend rodando 🌱' });
