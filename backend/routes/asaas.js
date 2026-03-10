@@ -3,6 +3,70 @@ const axios   = require('axios');
 const router  = express.Router();
 const { db }  = require('../firebase-admin');
 const { enviarConfirmacaoPedido, enviarPagamentoConfirmado, enviarRastreio } = require('../email');
+const axios = require('axios');
+
+// ── Melhor Envio ─────────────────────────────────────
+const ME_BASE = 'https://melhorenvio.com.br';
+async function adicionarCarrinhoME(pedido) {
+  const { cliente, endereco, itens, frete } = pedido;
+  const produtos = (itens || []).map(p => ({
+    name:          p.nome       || 'Camiseta S33D',
+    quantity:      p.quantidade || 1,
+    unitary_value: p.preco      || 0,
+    weight:        0.3,
+    width:         30,
+    height:        4,
+    length:        40,
+  }));
+
+  const payload = {
+    service: frete?.id,
+    from: {
+      name:             process.env.REMETENTE_NOME     || 'S33D',
+      phone:            process.env.REMETENTE_FONE     || '',
+      email:            process.env.REMETENTE_EMAIL    || '',
+      company_document: process.env.REMETENTE_CNPJ     || '',
+      address:          process.env.REMETENTE_ENDERECO || '',
+      number:           process.env.REMETENTE_NUMERO   || '',
+      district:         process.env.REMETENTE_BAIRRO   || '',
+      city:             process.env.REMETENTE_CIDADE   || '',
+      country_id:       'BR',
+      postal_code:      process.env.CEP_ORIGEM         || '',
+      state_abbr:       process.env.REMETENTE_UF       || '',
+    },
+    to: {
+      name:        cliente?.nome,
+      phone:       cliente?.telefone,
+      email:       cliente?.email,
+      document:    cliente?.cpf,
+      address:     endereco?.rua,
+      number:      endereco?.numero,
+      complement:  endereco?.complemento || '',
+      district:    endereco?.bairro,
+      city:        endereco?.cidade,
+      country_id:  'BR',
+      postal_code: endereco?.cep?.replace(/\D/g, ''),
+      state_abbr:  endereco?.uf,
+    },
+    products: produtos,
+    volumes: [{ height: 10, width: 30, length: 40, weight: 0.5 }],
+    options: {
+      insurance_value: 0, receipt: false, own_hand: false,
+      collect: false, reverse: false, non_commercial: false,
+      invoice: { key: '' },
+    },
+  };
+
+  const resposta = await axios.post(`${ME_BASE}/api/v2/me/cart`, payload, {
+    headers: {
+      'Authorization': `Bearer ${process.env.ME_TOKEN}`,
+      'Content-Type':  'application/json',
+      'Accept':        'application/json',
+      'User-Agent':    'S33D Loja (contato@s33d.com.br)',
+    }
+  });
+  return resposta.data.id;
+}
 
 const ASAAS_URL = process.env.ASAAS_SANDBOX === 'true'
   ? 'https://sandbox.asaas.com/api/v3'
@@ -236,15 +300,31 @@ router.post('/webhook', async (req, res) => {
 
     console.log(`✅ Pedido ${pagamentoId} atualizado para ${novoStatus}`);
 
-    // Envia e-mail de pagamento confirmado
     if (novoStatus === 'CONFIRMED' || novoStatus === 'RECEIVED') {
       try {
         const pedidoDoc = await db.collection('pedidos').doc(pagamentoId).get();
         if (pedidoDoc.exists) {
-          await enviarPagamentoConfirmado({ id: pagamentoId, ...pedidoDoc.data() });
+          const pedido = { id: pagamentoId, ...pedidoDoc.data() };
+
+          // 1. Envia e-mail de pagamento confirmado
+          await enviarPagamentoConfirmado(pedido);
+          console.log(`📧 E-mail pagamento confirmado enviado para ${pedido.cliente?.email}`);
+
+          // 2. Adiciona ao carrinho do Melhor Envio
+          try {
+            const carrinhoId = await adicionarCarrinhoME(pedido);
+            await db.collection('pedidos').doc(pagamentoId).update({
+              'envio.melhorEnvioId': carrinhoId,
+              'envio.status':        'aguardando',
+              atualizadoEm:          new Date(),
+            });
+            console.log(`📦 Adicionado ao Melhor Envio: ${carrinhoId}`);
+          } catch (meErr) {
+            console.error('Erro ao adicionar ao ME:', meErr.response?.data || meErr.message);
+          }
         }
       } catch (emailErr) {
-        console.error('Erro ao enviar e-mail confirmação:', emailErr.message);
+        console.error('Erro ao processar confirmação:', emailErr.message);
       }
     }
   } catch (err) {

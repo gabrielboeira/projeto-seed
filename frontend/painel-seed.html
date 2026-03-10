@@ -934,12 +934,11 @@
     const list = document.getElementById('pedidos-list');
     list.innerHTML = `<div class="list-loading-spinner"><div class="spinner"></div><span>Carregando</span></div>`;
     try {
-      const snap = await getDocs(collection(db, 'pedidos'));
+      const snap = await getDocs(query(collection(db, 'pedidos'), orderBy('criadoEm', 'desc')));
       todosPedidos = [];
-snap.forEach(d => todosPedidos.push({ id: d.id, ...d.data() }));
-console.log('Pedidos carregados:', todosPedidos.length, todosPedidos);
-atualizarStats();
-renderizarPedidos(todosPedidos);
+      snap.forEach(d => todosPedidos.push({ id: d.id, ...d.data() }));
+      atualizarStats();
+      renderizarPedidos(todosPedidos);
     } catch (err) {
       list.innerHTML = `<p class="list-empty" style="color:var(--danger);">Erro: ${err.message}</p>`;
     }
@@ -1116,24 +1115,16 @@ renderizarPedidos(todosPedidos);
 
   window.marcarPostado = async function(pedidoId) {
     const rastreio = document.getElementById('rastreio-input')?.value.trim() || '';
+    if (!rastreio) { alert('Informe o código de rastreio antes de marcar como postado.'); return; }
     try {
-      await updateDoc(doc(db, 'pedidos', pedidoId), {
-        'envio.status':   'postado',
-        'envio.rastreio': rastreio,
-        'atualizadoEm':   new Date(),
+      // Chama backend — ele atualiza Firestore E envia e-mail
+      const r = await fetch(`${BACKEND_URL}/api/pedidos/${pedidoId}/rastreio`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rastreio }),
       });
-
-      // Notifica o backend para enviar e-mail de rastreio
-      if (rastreio) {
-        try {
-          await fetch(`${BACKEND_URL}/api/pedidos/${pedidoId}/rastreio`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ rastreio }),
-          });
-        } catch (e) { console.error('Erro ao enviar e-mail rastreio:', e); }
-      }
-
+      const d = await r.json();
+      if (d.erro) throw new Error(d.erro);
       fecharModalBtn();
       carregarPedidos();
     } catch (err) { alert('Erro: ' + err.message); }
@@ -1141,10 +1132,12 @@ renderizarPedidos(todosPedidos);
 
   window.marcarEntregue = async function(pedidoId) {
     try {
-      await updateDoc(doc(db, 'pedidos', pedidoId), {
-        'envio.status': 'entregue',
-        'atualizadoEm': new Date(),
+      const r = await fetch(`${BACKEND_URL}/api/pedidos/${pedidoId}/entregue`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
       });
+      const d = await r.json();
+      if (d.erro) throw new Error(d.erro);
       fecharModalBtn();
       carregarPedidos();
     } catch (err) { alert('Erro: ' + err.message); }
