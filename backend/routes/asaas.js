@@ -3,7 +3,6 @@ const axios   = require('axios');
 const router  = express.Router();
 const { db }  = require('../firebase-admin');
 const { enviarConfirmacaoPedido, enviarPagamentoConfirmado, enviarRastreio } = require('../email');
-const axios = require('axios');
 
 // ── Melhor Envio ─────────────────────────────────────
 const ME_BASE = 'https://melhorenvio.com.br';
