@@ -6,8 +6,10 @@ const { enviarConfirmacaoPedido, enviarPagamentoConfirmado, enviarRastreio } = r
 
 // ── Melhor Envio ─────────────────────────────────────
 const ME_BASE = 'https://melhorenvio.com.br';
+
 async function adicionarCarrinhoME(pedido) {
   const { cliente, endereco, itens, frete } = pedido;
+
   const produtos = (itens || []).map(p => ({
     name:          p.nome       || 'Camiseta S33D',
     quantity:      p.quantidade || 1,
@@ -50,22 +52,29 @@ async function adicionarCarrinhoME(pedido) {
     products: produtos,
     volumes: [{ height: 10, width: 30, length: 40, weight: 0.5 }],
     options: {
-      insurance_value: 0, receipt: false, own_hand: false,
-      collect: false, reverse: false, non_commercial: false,
+      insurance_value: 0,
+      receipt: false,
+      own_hand: false,
+      collect: false,
+      reverse: false,
+      non_commercial: false,
       invoice: { key: '' },
     },
   };
 
   const resposta = await axios.post(`${ME_BASE}/api/v2/me/cart`, payload, {
     headers: {
-      'Authorization': `Bearer ${process.env.ME_TOKEN}`,
-      'Content-Type':  'application/json',
-      'Accept':        'application/json',
-      'User-Agent':    'S33D Loja (contato@s33d.com.br)',
+      Authorization: `Bearer ${process.env.ME_TOKEN}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'User-Agent': 'S33D Loja (contato@s33d.com.br)',
     }
   });
+
   return resposta.data.id;
 }
+
+// ── Asaas ─────────────────────────────────────────────
 
 const ASAAS_URL = process.env.ASAAS_SANDBOX === 'true'
   ? 'https://sandbox.asaas.com/api/v3'
@@ -74,65 +83,91 @@ const ASAAS_URL = process.env.ASAAS_SANDBOX === 'true'
 const asaas = axios.create({
   baseURL: ASAAS_URL,
   headers: {
-    'access_token': process.env.ASAAS_API_KEY,
+    access_token: process.env.ASAAS_API_KEY,
     'Content-Type': 'application/json',
     'User-Agent': 'S33D/1.0',
   },
 });
 
 // ────────────────────────────────────────────────────
-// Busca ou cria cliente no Asaas pelo CPF/CNPJ
+// Busca ou cria cliente no Asaas
 // ────────────────────────────────────────────────────
+
 async function buscarOuCriarCliente({ nome, email, cpfCnpj, telefone }) {
+
   const busca = await asaas.get(`/customers?cpfCnpj=${cpfCnpj}`);
+
   if (busca.data.data && busca.data.data.length > 0) {
     return busca.data.data[0].id;
   }
-  const novo = await asaas.post('/customers', { name: nome, email, cpfCnpj, mobilePhone: telefone });
+
+  const novo = await asaas.post('/customers', {
+    name: nome,
+    email,
+    cpfCnpj,
+    mobilePhone: telefone
+  });
+
   return novo.data.id;
 }
 
 // ────────────────────────────────────────────────────
 // Salva pedido no Firestore
 // ────────────────────────────────────────────────────
+
 async function salvarPedido(pagamentoId, dados) {
+
   await db.collection('pedidos').doc(pagamentoId).set({
+
     cliente: {
-      nome:     dados.nome,
-      email:    dados.email,
-      cpf:      dados.cpfCnpj,
+      nome: dados.nome,
+      email: dados.email,
+      cpf: dados.cpfCnpj,
       telefone: dados.telefone || '',
     },
+
     endereco: {
-      cep:         dados.cep || '',
-      numero:      dados.numero || '',
+      cep: dados.cep || '',
+      numero: dados.numero || '',
       complemento: dados.complemento || '',
-      rua:         dados.endereco || '',
-      bairro:      dados.bairro || '',
-      cidade:      dados.cidade || '',
-      uf:          dados.uf || '',
+      rua: dados.endereco || '',
+      bairro: dados.bairro || '',
+      cidade: dados.cidade || '',
+      uf: dados.uf || '',
     },
+
     itens: dados.itens || [],
     frete: dados.frete || null,
+
     pagamento: {
-      metodo:   dados.metodo,
-      asaasId:  pagamentoId,
-      status:   'PENDING',
-      valor:    dados.valor,
+      metodo: dados.metodo,
+      asaasId: pagamentoId,
+      status: 'PENDING',
+      valor: dados.valor,
       parcelas: dados.parcelas || 1,
     },
-    total:        dados.valor,
-    criadoEm:     new Date(),
+
+    total: dados.valor,
+
+    criadoEm: new Date(),
     atualizadoEm: new Date(),
   });
 }
 
 // ────────────────────────────────────────────────────
-// POST /api/pagamento/pix
+// PIX
 // ────────────────────────────────────────────────────
+
 router.post('/pix', async (req, res) => {
+
   try {
-    const { nome, email, cpfCnpj, telefone, valor, itens, frete, cep, numero, complemento, endereco, bairro, cidade, uf } = req.body;
+
+    const {
+      nome, email, cpfCnpj, telefone,
+      valor, itens, frete,
+      cep, numero, complemento,
+      endereco, bairro, cidade, uf
+    } = req.body;
 
     if (!nome || !email || !cpfCnpj || !valor) {
       return res.status(400).json({ erro: 'Campos obrigatórios: nome, email, cpfCnpj, valor' });
@@ -141,196 +176,145 @@ router.post('/pix', async (req, res) => {
     const customerId = await buscarOuCriarCliente({ nome, email, cpfCnpj, telefone });
 
     const cobranca = await asaas.post('/payments', {
-      customer:    customerId,
+      customer: customerId,
       billingType: 'PIX',
-      value:       valor,
-      dueDate:     new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      value: valor,
+      dueDate: new Date(Date.now() + 24*60*60*1000).toISOString().split('T')[0],
       description: 'Pedido S33D',
     });
 
     const qrCode = await asaas.get(`/payments/${cobranca.data.id}/pixQrCode`);
 
-    // Salva pedido no Firestore
     await salvarPedido(cobranca.data.id, {
-      nome, email, cpfCnpj, telefone, valor,
-      itens, frete, cep, numero, complemento,
-      endereco, bairro, cidade, uf,
-      metodo: 'pix',
+      nome,email,cpfCnpj,telefone,valor,
+      itens,frete,cep,numero,complemento,endereco,bairro,cidade,uf,
+      metodo:'pix'
     });
 
-    // Envia e-mail de confirmação
     try {
       const pedidoSalvo = await db.collection('pedidos').doc(cobranca.data.id).get();
       await enviarConfirmacaoPedido({ id: cobranca.data.id, ...pedidoSalvo.data() });
-    } catch (emailErr) {
-      console.error('Erro ao enviar e-mail PIX:', emailErr.message);
+    } catch(e){
+      console.error('Erro email PIX',e.message);
     }
 
     return res.json({
-      pagamentoId: cobranca.data.id,
-      status:      cobranca.data.status,
-      valor:       cobranca.data.value,
-      vencimento:  cobranca.data.dueDate,
-      pix: {
-        qrCode:     qrCode.data.encodedImage,
-        copiaECola: qrCode.data.payload,
-        expiracao:  qrCode.data.expirationDate,
-      },
+      pagamentoId:cobranca.data.id,
+      status:cobranca.data.status,
+      valor:cobranca.data.value,
+      vencimento:cobranca.data.dueDate,
+      pix:{
+        qrCode:qrCode.data.encodedImage,
+        copiaECola:qrCode.data.payload,
+        expiracao:qrCode.data.expirationDate
+      }
     });
-  } catch (err) {
-    console.error('Erro PIX:', err.response?.data || err.message);
-    return res.status(500).json({ erro: err.response?.data?.errors?.[0]?.description || err.message });
+
+  } catch(err){
+
+    console.error('Erro PIX',err.response?.data||err.message);
+
+    return res.status(500).json({
+      erro:err.response?.data?.errors?.[0]?.description||err.message
+    });
+
   }
+
 });
 
 // ────────────────────────────────────────────────────
-// POST /api/pagamento/cartao
+// WEBHOOK
 // ────────────────────────────────────────────────────
-router.post('/cartao', async (req, res) => {
-  try {
-    const { nome, email, cpfCnpj, telefone, valor, parcelas = 1, cartao, itens, frete, cep, numero, complemento, endereco, bairro, cidade, uf } = req.body;
 
-    if (!nome || !email || !cpfCnpj || !valor || !cartao) {
-      return res.status(400).json({ erro: 'Campos obrigatórios: nome, email, cpfCnpj, valor, cartao' });
-    }
-
-    const customerId = await buscarOuCriarCliente({ nome, email, cpfCnpj, telefone });
-
-    const [mesVal, anoVal] = cartao.validade.split('/');
-
-    const cobranca = await asaas.post('/payments', {
-      customer:         customerId,
-      billingType:      'CREDIT_CARD',
-      value:            valor,
-      dueDate:          new Date().toISOString().split('T')[0],
-      description:      'Pedido S33D',
-      installmentCount: parcelas > 1 ? parcelas : undefined,
-      installmentValue: parcelas > 1 ? (valor / parcelas).toFixed(2) : undefined,
-      creditCard: {
-        holderName:  cartao.nome,
-        number:      cartao.numero.replace(/\s/g, ''),
-        expiryMonth: mesVal,
-        expiryYear:  anoVal.length === 2 ? `20${anoVal}` : anoVal,
-        ccv:         cartao.cvv,
-      },
-      creditCardHolderInfo: {
-        name:          nome,
-        email,
-        cpfCnpj,
-        mobilePhone:   telefone,
-        postalCode:    cep || '',
-        addressNumber: numero || 'S/N',
-      },
-      remoteIp: req.ip,
-    });
-
-    // Salva pedido no Firestore
-    await salvarPedido(cobranca.data.id, {
-      nome, email, cpfCnpj, telefone, valor, parcelas,
-      itens, frete, cep, numero, complemento,
-      endereco, bairro, cidade, uf,
-      metodo: 'cartao',
-    });
-
-    // Envia e-mail de confirmação
-    try {
-      const pedidoSalvo = await db.collection('pedidos').doc(cobranca.data.id).get();
-      await enviarConfirmacaoPedido({ id: cobranca.data.id, ...pedidoSalvo.data() });
-    } catch (emailErr) {
-      console.error('Erro ao enviar e-mail cartão:', emailErr.message);
-    }
-
-    return res.json({
-      pagamentoId: cobranca.data.id,
-      status:      cobranca.data.status,
-      valor:       cobranca.data.value,
-      parcelas:    cobranca.data.installmentCount || 1,
-    });
-  } catch (err) {
-    console.error('Erro cartão:', err.response?.data || err.message);
-    return res.status(500).json({ erro: err.response?.data?.errors?.[0]?.description || err.message });
-  }
-});
-
-// ────────────────────────────────────────────────────
-// GET /api/pagamento/status/:id
-// ────────────────────────────────────────────────────
-router.get('/status/:id', async (req, res) => {
-  try {
-    const pagamento = await asaas.get(`/payments/${req.params.id}`);
-    return res.json({
-      pagamentoId: pagamento.data.id,
-      status:      pagamento.data.status,
-      valor:       pagamento.data.value,
-    });
-  } catch (err) {
-    return res.status(500).json({ erro: err.message });
-  }
-});
-
-// ────────────────────────────────────────────────────
-// POST /api/pagamento/webhook
-// ────────────────────────────────────────────────────
 router.post('/webhook', async (req, res) => {
+
   const evento = req.body;
+
   console.log('📩 Webhook Asaas:', evento.event, evento.payment?.id, evento.payment?.status);
 
   try {
+
     const pagamentoId = evento.payment?.id;
+
     if (!pagamentoId) return res.sendStatus(200);
 
-    // Mapeia eventos do Asaas para status internos
     const statusMap = {
-      PAYMENT_CONFIRMED:  'CONFIRMED',
-      PAYMENT_RECEIVED:   'RECEIVED',
-      PAYMENT_OVERDUE:    'OVERDUE',
-      PAYMENT_DELETED:    'CANCELLED',
-      PAYMENT_REFUNDED:   'REFUNDED',
+      PAYMENT_CONFIRMED:'CONFIRMED',
+      PAYMENT_RECEIVED:'RECEIVED',
+      PAYMENT_OVERDUE:'OVERDUE',
+      PAYMENT_DELETED:'CANCELLED',
+      PAYMENT_REFUNDED:'REFUNDED'
     };
 
     const novoStatus = statusMap[evento.event];
+
     if (!novoStatus) return res.sendStatus(200);
 
-    // Atualiza status no Firestore
     await db.collection('pedidos').doc(pagamentoId).update({
-      'pagamento.status': novoStatus,
-      atualizadoEm: new Date(),
+      'pagamento.status':novoStatus,
+      atualizadoEm:new Date()
     });
 
     console.log(`✅ Pedido ${pagamentoId} atualizado para ${novoStatus}`);
 
-    if (novoStatus === 'CONFIRMED' || novoStatus === 'RECEIVED') {
-      try {
-        const pedidoDoc = await db.collection('pedidos').doc(pagamentoId).get();
-        if (pedidoDoc.exists) {
-          const pedido = { id: pagamentoId, ...pedidoDoc.data() };
+    if(novoStatus==='CONFIRMED'||novoStatus==='RECEIVED'){
 
-          // 1. Envia e-mail de pagamento confirmado
-          await enviarPagamentoConfirmado(pedido);
-          console.log(`📧 E-mail pagamento confirmado enviado para ${pedido.cliente?.email}`);
+      const pedidoDoc = await db.collection('pedidos').doc(pagamentoId).get();
 
-          // 2. Adiciona ao carrinho do Melhor Envio
-          try {
-            const carrinhoId = await adicionarCarrinhoME(pedido);
-            await db.collection('pedidos').doc(pagamentoId).update({
-              'envio.melhorEnvioId': carrinhoId,
-              'envio.status':        'aguardando',
-              atualizadoEm:          new Date(),
-            });
-            console.log(`📦 Adicionado ao Melhor Envio: ${carrinhoId}`);
-          } catch (meErr) {
-            console.error('Erro ao adicionar ao ME:', meErr.response?.data || meErr.message);
-          }
-        }
-      } catch (emailErr) {
-        console.error('Erro ao processar confirmação:', emailErr.message);
+      if(!pedidoDoc.exists) return res.sendStatus(200);
+
+      const pedido = { id:pagamentoId, ...pedidoDoc.data() };
+
+      await enviarPagamentoConfirmado(pedido);
+
+      console.log(`📧 Email pagamento confirmado enviado`);
+
+      try{
+
+        const carrinhoId = await adicionarCarrinhoME(pedido);
+
+        console.log(`🛒 Carrinho criado no Melhor Envio: ${carrinhoId}`);
+
+        await axios.post(`${ME_BASE}/api/v2/me/shipment/checkout`,
+          {orders:[carrinhoId]},
+          {headers:{Authorization:`Bearer ${process.env.ME_TOKEN}`,'Content-Type':'application/json',Accept:'application/json'}}
+        );
+
+        console.log('💳 Frete comprado');
+
+        await axios.post(`${ME_BASE}/api/v2/me/shipment/generate`,
+          {orders:[carrinhoId]},
+          {headers:{Authorization:`Bearer ${process.env.ME_TOKEN}`,'Content-Type':'application/json',Accept:'application/json'}}
+        );
+
+        console.log('🏷️ Etiqueta gerada');
+
+        await db.collection('pedidos').doc(pagamentoId).update({
+          envio:{
+            melhorEnvioId:carrinhoId,
+            status:'etiqueta_gerada'
+          },
+          atualizadoEm:new Date()
+        });
+
+        console.log('📦 Envio salvo no banco');
+
+      }catch(meErr){
+
+        console.error('Erro Melhor Envio',meErr.response?.data||meErr.message);
+
       }
+
     }
-  } catch (err) {
-    console.error('Erro webhook:', err.message);
+
+  } catch(err){
+
+    console.error('Erro webhook',err.message);
+
   }
 
   return res.sendStatus(200);
+
 });
 
 module.exports = router;
