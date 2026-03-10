@@ -1,5 +1,5 @@
 // ── Configuração ─────────────────────────────────────
-const BACKEND_URL = 'http://localhost:3000'; // troque pela URL do Railway em produção
+const BACKEND_URL = 'https://projeto-seed-production.up.railway.app';
 
 // ── Estado ───────────────────────────────────────────
 const checkoutState = {
