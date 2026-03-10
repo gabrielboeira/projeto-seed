@@ -936,9 +936,10 @@
     try {
       const snap = await getDocs(collection(db, 'pedidos'));
       todosPedidos = [];
-      snap.forEach(d => todosPedidos.push({ id: d.id, ...d.data() }));
-      atualizarStats();
-      renderizarPedidos(todosPedidos);
+snap.forEach(d => todosPedidos.push({ id: d.id, ...d.data() }));
+console.log('Pedidos carregados:', todosPedidos.length, todosPedidos);
+atualizarStats();
+renderizarPedidos(todosPedidos);
     } catch (err) {
       list.innerHTML = `<p class="list-empty" style="color:var(--danger);">Erro: ${err.message}</p>`;
     }
