@@ -10,7 +10,11 @@ const PORT = process.env.PORT || 3000;
 
 // ── Middlewares ──────────────────────────────────────
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*', // em produção coloque a URL do seu site
+  origin: [
+    'https://s33d.com.br',
+    'https://www.s33d.com.br',
+    'https://projeto-seed.vercel.app',
+  ],
 }));
 app.use(express.json());
 

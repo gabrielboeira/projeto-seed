@@ -1,5 +1,5 @@
 // ── Configuração ─────────────────────────────────────
-const BACKEND_URL = 'https://s33d.com.br';
+const BACKEND_URL = 'https://projeto-seed-production.up.railway.app';
 
 // ── Estado ───────────────────────────────────────────
 const checkoutState = {
