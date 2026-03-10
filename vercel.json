@@ -1,0 +1,10 @@
+{
+    "rewrites": [
+      { "source": "/carrinho",  "destination": "/carrinho.html" },
+      { "source": "/produto",   "destination": "/produto.html" },
+      { "source": "/checkout",  "destination": "/checkout.html" },
+      { "source": "/sobre",     "destination": "/sobre.html" },
+      { "source": "/admin",     "destination": "/painel-seed.html" },
+      { "source": "/login",     "destination": "/manager-seed.html" }
+    ]
+  }
