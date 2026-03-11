@@ -93,10 +93,24 @@ async function buscarOuCriarCliente({ nome, email, cpfCnpj, telefone }) {
 }
 
 // ────────────────────────────────────────────────────
+// Gera número sequencial de pedido
+// ────────────────────────────────────────────────────
+async function gerarNumeroPedido() {
+  const contadorRef = db.collection('config').doc('contadores');
+  const snap = await contadorRef.get();
+  const atual = snap.exists ? (snap.data().numeroPedido || 0) : 0;
+  const proximo = atual + 1;
+  await contadorRef.set({ numeroPedido: proximo }, { merge: true });
+  return proximo;
+}
+
+// ────────────────────────────────────────────────────
 // Salva pedido no Firestore
 // ────────────────────────────────────────────────────
 async function salvarPedido(pagamentoId, dados) {
+  const numeroPedido = await gerarNumeroPedido();
   await db.collection('pedidos').doc(pagamentoId).set({
+    numeroPedido,
     cliente: {
       nome:     dados.nome,
       email:    dados.email,

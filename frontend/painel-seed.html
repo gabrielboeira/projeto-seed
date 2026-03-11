@@ -359,7 +359,7 @@
     }
     .pedidos-table-header {
       display: grid;
-      grid-template-columns: 1fr 160px 120px 120px 100px 48px;
+      grid-template-columns: 1fr 80px 160px 120px 120px 100px 48px;
       gap: 16px;
       padding: 12px 20px;
       background: var(--bg);
@@ -372,7 +372,7 @@
     }
     .pedido-row {
       display: grid;
-      grid-template-columns: 1fr 160px 120px 120px 100px 48px;
+      grid-template-columns: 1fr 80px 160px 120px 120px 100px 48px;
       gap: 16px;
       padding: 16px 20px;
       border-bottom: 1px solid var(--line);
@@ -550,7 +550,7 @@
       .form-panel, .list-panel, .pedidos-panel { padding: 24px 20px; }
       .admin-header, .admin-tabs { padding: 0 20px; }
       .pedidos-stats { grid-template-columns: 1fr 1fr; }
-      .pedidos-table-header, .pedido-row { grid-template-columns: 1fr auto auto; }
+      .pedidos-table-header, .pedido-row { grid-template-columns: 1fr auto auto auto; }
       .pedidos-table-header .col-metodo,
       .pedidos-table-header .col-envio,
       .pedido-row .col-metodo,
@@ -703,6 +703,7 @@
     <div class="pedidos-table">
       <div class="pedidos-table-header">
         <span>Cliente</span>
+        <span>Pedido</span>
         <span>Valor</span>
         <span class="col-metodo">Pagamento</span>
         <span class="col-envio">Envio</span>
@@ -970,11 +971,13 @@
 
       const row = document.createElement('div');
       row.className = 'pedido-row';
+      const numPedido = p.numeroPedido ? `#${String(p.numeroPedido).padStart(4,'0')}` : '—';
       row.innerHTML = `
         <div class="pedido-cliente">
           <h4>${p.cliente?.nome || '—'}</h4>
           <span>${p.cliente?.email || ''}</span>
         </div>
+        <div style="font-size:13px;font-weight:700;color:var(--ink);">${numPedido}</div>
         <div class="pedido-valor">${fmt(p.total || 0)}</div>
         <div class="col-metodo">
           <span class="status-badge status-${status}">${statusLabel[status] || status}</span>
@@ -1013,7 +1016,8 @@
     const envio  = p.envio?.status || 'aguardando';
     const pago   = ['CONFIRMED','RECEIVED'].includes(status);
 
-    document.getElementById('modal-pedido-id').textContent = `#${pedidoId.slice(-8).toUpperCase()}`;
+    const numModal = p.numeroPedido ? `Pedido #${String(p.numeroPedido).padStart(4,'0')}` : `#${pedidoId.slice(-8).toUpperCase()}`;
+    document.getElementById('modal-pedido-id').textContent = numModal;
     document.getElementById('modal-body').innerHTML = `
       <div class="modal-section">
         <div class="modal-section-title">Cliente</div>
@@ -1062,7 +1066,7 @@
         <div class="modal-info-grid">
           <div class="modal-info-item"><label>Método</label><span>${p.pagamento?.metodo === 'pix' ? 'PIX' : 'Cartão'}</span></div>
           <div class="modal-info-item"><label>Status</label><span class="status-badge status-${status}">${statusLabel[status] || status}</span></div>
-          <div class="modal-info-item"><label>ID Asaas</label><span style="font-size:11px;">${p.pagamento?.asaasId || '—'}</span></div>
+          <div class="modal-info-item"><label>Nº Pedido</label><span style="font-weight:700;">${p.numeroPedido ? '#' + String(p.numeroPedido).padStart(4,'0') : '—'}</span></div>
           <div class="modal-info-item"><label>Parcelas</label><span>${p.pagamento?.parcelas || 1}x</span></div>
         </div>
       </div>
@@ -1083,6 +1087,7 @@
       <div class="modal-actions">
         ${pago && envio === 'aguardando' ? `<button class="btn-action primary" onclick="marcarPostado('${pedidoId}')">✓ Marcar como postado</button>` : ''}
         ${envio === 'postado' ? `<button class="btn-action primary" onclick="marcarEntregue('${pedidoId}')">✓ Marcar como entregue</button>` : ''}
+        ${pago && p.envio?.melhorEnvioId ? `<button class="btn-action" onclick="gerarEtiqueta('${p.envio.melhorEnvioId}')">🏷 Gerar etiqueta</button>` : ''}
         <button class="btn-action" onclick="fecharModalBtn()">Fechar</button>
       </div>
     `;
@@ -1140,6 +1145,52 @@
       if (d.erro) throw new Error(d.erro);
       fecharModalBtn();
       carregarPedidos();
+    } catch (err) { alert('Erro: ' + err.message); }
+  };
+
+  // ── Gerar etiqueta Melhor Envio ────────────────────
+  window.gerarEtiqueta = async function(carrinhoId) {
+    try {
+      const r = await fetch(`${BACKEND_URL}/api/frete/etiqueta`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ carrinhoId }),
+      });
+      const d = await r.json();
+      if (d.erro) throw new Error(d.erro);
+      if (d.url) window.open(d.url, '_blank');
+      else alert('Etiqueta gerada! Acesse o Melhor Envio para imprimir.');
+    } catch (err) { alert('Erro ao gerar etiqueta: ' + err.message); }
+  };
+
+  window.gerarEtiqueta = async function(pedidoId) {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = 'Gerando...';
+    try {
+      const r = await fetch(`${BACKEND_URL}/api/pedidos/${pedidoId}/etiqueta`);
+      const d = await r.json();
+      if (d.erro) throw new Error(d.erro);
+      window.open(d.url, '_blank');
+    } catch (err) {
+      alert('Erro ao gerar etiqueta: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🏷 Gerar etiqueta';
+    }
+  };
+
+  window.gerarEtiqueta = async function(melhorEnvioId) {
+    try {
+      const r = await fetch(`${BACKEND_URL}/api/frete/etiqueta`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: [melhorEnvioId] }),
+      });
+      const d = await r.json();
+      if (d.erro) throw new Error(d.erro);
+      if (d.url) window.open(d.url, '_blank');
+      else alert('Etiqueta gerada! Verifique o Melhor Envio.');
     } catch (err) { alert('Erro: ' + err.message); }
   };
 

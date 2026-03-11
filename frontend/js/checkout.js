@@ -369,9 +369,24 @@ function copiarPIX() {
 }
 
 // ── Confirmar pedido ─────────────────────────────────
-function confirmarPedido(id) {
+async function confirmarPedido(id) {
   cartManager.clearCart();
-  document.getElementById('pedido-id').textContent = id;
+  // Busca número sequencial do pedido no Firestore
+  try {
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+    const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+    const app = initializeApp({
+      apiKey: "AIzaSyDA7rYcAyjiaC21ZjC5g7m9cegSkZyAQs0",
+      authDomain: "seed-b9834.firebaseapp.com",
+      projectId: "seed-b9834",
+    });
+    const db = getFirestore(app);
+    const pedidoDoc = await getDoc(doc(db, 'pedidos', id));
+    const num = pedidoDoc.exists() ? pedidoDoc.data().numeroPedido : null;
+    document.getElementById('pedido-id').textContent = num ? `#${String(num).padStart(4, '0')}` : `#${id.slice(-8).toUpperCase()}`;
+  } catch {
+    document.getElementById('pedido-id').textContent = `#${id.slice(-8).toUpperCase()}`;
+  }
   irParaStep(4);
 }
 

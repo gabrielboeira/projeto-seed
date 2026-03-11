@@ -214,9 +214,9 @@ router.post('/comprar', async (req, res) => {
 // ────────────────────────────────────────────────────
 router.post('/etiqueta', async (req, res) => {
   try {
-    const { carrinhoIds } = req.body;
-    await requisicaoME(c => c.post('/me/shipment/generate', { orders: carrinhoIds }));
-    const etiqueta = await requisicaoME(c => c.post('/me/shipment/print', { orders: carrinhoIds }));
+    const ids = req.body.ids || req.body.carrinhoIds;
+    await requisicaoME(c => c.post('/me/shipment/generate', { orders: ids }));
+    const etiqueta = await requisicaoME(c => c.post('/me/shipment/print', { orders: ids }));
     return res.json({ url: etiqueta.data.url });
   } catch (err) {
     return res.status(500).json({ erro: err.response?.data?.message || err.message });
