@@ -309,20 +309,32 @@ router.post('/webhook', async (req, res) => {
           await enviarPagamentoConfirmado(pedido);
           console.log(`📧 E-mail pagamento confirmado enviado para ${pedido.cliente?.email}`);
 
-          // 2. Adiciona ao carrinho do Melhor Envio
+          // 2. Baixa estoque dos produtos
+          try {
+            const itens = pedido.itens || [];
+            for (const item of itens) {
+              if (!item.produtoId || !item.tamanho) continue;
+              const produtoRef = db.collection('produtos').doc(item.produtoId);
+              const produtoDoc = await produtoRef.get();
+              if (!produtoDoc.exists) continue;
+              const estoque = produtoDoc.data().estoque || {};
+              const atual = estoque[item.tamanho] || 0;
+              const novo  = Math.max(0, atual - (item.quantidade || 1));
+              await produtoRef.update({ [`estoque.${item.tamanho}`]: novo });
+              console.log(`📦 Estoque ${item.nome} ${item.tamanho}: ${atual} → ${novo}`);
+            }
+          } catch (estoqueErr) {
+            console.error('Erro ao baixar estoque:', estoqueErr.message);
+          }
+
+          // 3. Adiciona ao carrinho do Melhor Envio
           try {
             const carrinhoId = await adicionarCarrinhoME(pedido);
-            await axios.post(
-              `${ME_BASE}/api/v2/me/shipment/checkout`,
-              { orders: [carrinhoId] },
-              {
-                headers: {
-                  Authorization: `Bearer ${process.env.ME_TOKEN}`,
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json'
-                }
-              }
-            );
+            await db.collection('pedidos').doc(pagamentoId).update({
+              'envio.melhorEnvioId': carrinhoId,
+              'envio.status':        'aguardando',
+              atualizadoEm:          new Date(),
+            });
             console.log(`📦 Adicionado ao Melhor Envio: ${carrinhoId}`);
           } catch (meErr) {
             console.error('Erro ao adicionar ao ME:', meErr.response?.data || meErr.message);
