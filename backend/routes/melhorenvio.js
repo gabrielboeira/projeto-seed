@@ -215,10 +215,17 @@ router.post('/comprar', async (req, res) => {
 router.post('/etiqueta', async (req, res) => {
   try {
     const ids = req.body.ids || req.body.carrinhoIds;
-    await requisicaoME(c => c.post('/me/shipment/generate', { orders: ids }));
+    console.log('🏷️ Gerando etiqueta para:', ids);
+ 
+    const generate = await requisicaoME(c => c.post('/me/shipment/generate', { orders: ids }));
+    console.log('✅ Generate:', JSON.stringify(generate.data));
+ 
     const etiqueta = await requisicaoME(c => c.post('/me/shipment/print', { orders: ids }));
+    console.log('✅ Print:', JSON.stringify(etiqueta.data));
+ 
     return res.json({ url: etiqueta.data.url });
   } catch (err) {
+    console.error('❌ Erro etiqueta:', JSON.stringify(err.response?.data || err.message));
     return res.status(500).json({ erro: err.response?.data?.message || err.message });
   }
 });
