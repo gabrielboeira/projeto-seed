@@ -341,15 +341,30 @@ router.post('/webhook', async (req, res) => {
             console.error('Erro ao baixar estoque:', estoqueErr.message);
           }
 
-          // 3. Adiciona ao carrinho do Melhor Envio
+          // 3. Adiciona ao carrinho do Melhor Envio e faz checkout
           try {
             const carrinhoId = await adicionarCarrinhoME(pedido);
+            console.log(`🛒 Carrinho ME criado: ${carrinhoId}`);
+
+            // Faz checkout (paga a etiqueta com saldo ME)
+            await axios.post(`${ME_BASE}/api/v2/me/shipment/checkout`,
+              { orders: [carrinhoId] },
+              {
+                headers: {
+                  'Authorization': `Bearer ${process.env.ME_TOKEN}`,
+                  'Content-Type':  'application/json',
+                  'Accept':        'application/json',
+                  'User-Agent':    'S33D Loja (contato@s33d.com.br)',
+                }
+              }
+            );
+            console.log(`✅ Checkout ME realizado: ${carrinhoId}`);
+
             await db.collection('pedidos').doc(pagamentoId).update({
               'envio.melhorEnvioId': carrinhoId,
               'envio.status':        'aguardando',
               atualizadoEm:          new Date(),
             });
-            console.log(`📦 Adicionado ao Melhor Envio: ${carrinhoId}`);
           } catch (meErr) {
             console.error('Erro ao adicionar ao ME:', meErr.response?.data || meErr.message);
           }
